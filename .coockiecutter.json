@@ -1,0 +1,25 @@
+{
+  "cookiecutter": {
+    "include_sphinx_doc": "y",
+    "project_slug": "fakturownia-python",
+    "project_url": "https://github.com/wooyek/fakturownia-python",
+    "pypi_username": "wooyek",
+    "open_source_license": "MIT license",
+    "run_tests_on_init": "y",
+    "use_travis_ci": "y",
+    "project_name": "Fakturownia",
+    "package_name": "fakturownia",
+    "copyright": "Janusz Skonieczny",
+    "sphinx_theme": "sphinx-rtd-theme",
+    "full_name": "Janusz Skonieczny",
+    "use_read_the_docs": "y",
+    "repo_domain": "github.com",
+    "repo_username": "wooyek",
+    "project_short_description": "Python client library for the Fakturownia API",
+    "email": "js+pypi@bravelabs.pl",
+    "create_virtual_environment": "y",
+    "version": "0.1.0",
+    "git_init": "y",
+    "repo_url": "git@github.com:wooyek/fakturownia-python.git"
+  }
+}

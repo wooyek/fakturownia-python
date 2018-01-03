@@ -1,0 +1,9 @@
+# Fakturownia dependencies
+# For development we keep them unfreezed to work and test on newest versions as soon as they are released
+# Local proprietary packages
+--find-links=requirements
+# Other dependencies
+click
+enum34 ; python_version < '3.4'
+pathlib ; python_version < '3.3'
+requests
