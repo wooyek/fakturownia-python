@@ -12,6 +12,7 @@ class DateProperty(object):
         self.value = None
 
     def __get__(self, instance, owner):
+        # noinspection PyProtectedMember
         value = instance._data.get(self.name)
         return datetime.strptime(value, '%Y-%m-%d').date() if value and isinstance(value, six.string_types) else value
 
@@ -29,13 +30,14 @@ class Invoices(BaseEndpoint):
 
 
 class Invoice(BaseModel):
-    endpoint = 'invoices'
-    data_wrap = 'invoice'
+    _endpoint = 'invoices'
+    _data_wrap = 'invoice'
     sell_date = DateProperty('sell_date')
     issue_date = DateProperty('issue_date')
     payment_to = DateProperty('payment_to')
 
     def send_by_email(self):
+        assert self.id, 'Cannot send invoice without id'
         endpoint = self.get_endpoint('/send_by_email')
         self._client.post(endpoint)
 
@@ -47,8 +49,8 @@ class Clients(BaseEndpoint):
 
 
 class Client(BaseModel):
-    endpoint = 'clients'
-    data_wrap = 'client'
+    _endpoint = 'clients'
+    _data_wrap = 'client'
 
     def create_invoice(self, **kwargs):
         assert self.id

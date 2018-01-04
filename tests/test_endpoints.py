@@ -8,7 +8,7 @@ import six
 from mock import MagicMock
 
 from . import test_data
-from fakturownia import factories
+from fakturownia import base, factories
 
 log = logging.getLogger(__name__)
 
@@ -57,7 +57,6 @@ def test_create_refresh_client_sandbox(sandbox_client, data):
     item.get()
     log.debug("id: %s", item.id)
     assert item.id
-    assert item.payment_url
 
 
 def test_client_create_invoice(mocker):
@@ -86,11 +85,56 @@ def test_client_create_invoice_sandbox(sandbox_client, data):
     assert invoice.payment_url
 
 
-def test_dates_on_invoice():
-    invoice = factories.InvoiceFactory()
-    assert isinstance(invoice.sell_date, datetime.date)
-    assert isinstance(invoice.issue_date, datetime.date)
-    assert isinstance(invoice.payment_to, datetime.date)
-    assert isinstance(invoice._data['sell_date'], six.string_types)
-    assert isinstance(invoice._data['issue_date'], six.string_types)
-    assert isinstance(invoice._data['payment_to'], six.string_types)
+# noinspection PyMethodMayBeStatic
+class InvoiceTests(object):
+
+    # noinspection PyProtectedMember
+    def test_dates_on_invoice(self):
+        invoice = factories.InvoiceFactory()
+        assert isinstance(invoice.sell_date, datetime.date)
+        assert isinstance(invoice.issue_date, datetime.date)
+        assert isinstance(invoice.payment_to, datetime.date)
+        assert isinstance(invoice._data['sell_date'], six.string_types)
+        assert isinstance(invoice._data['issue_date'], six.string_types)
+        assert isinstance(invoice._data['payment_to'], six.string_types)
+
+    def test_set_datetime_str(self):
+        invoice = factories.InvoiceFactory()
+        invoice.sell_date = '1980-08-14'
+        assert invoice.sell_date == datetime.date(1980, 8, 14)
+        # noinspection PyProtectedMember
+        assert invoice._data['sell_date'] == '1980-08-14'
+
+    def test_send_by_email(self, mocker):
+        post = mocker.patch('fakturownia.core.Client.post')
+        invoice = factories.InvoiceFactory(id='666')
+        invoice.send_by_email()
+        post.assert_called_with('invoices/666/send_by_email.json')
+
+    def test_send_by_email_failed_no_id(self):
+        invoice = factories.InvoiceFactory()
+        with pytest.raises(AssertionError, match='Cannot send invoice without id'):
+            invoice.send_by_email()
+
+
+# noinspection PyMethodMayBeStatic
+class BaseModelTests(object):
+
+    def test_get(self, client, mocker):
+        client_get = mocker.patch('fakturownia.core.Client.get')
+        client_get.return_value = {'foo': 'bar'}
+        item = base.BaseModel(client, _endpoint='api')
+        item.get()
+        assert client_get.called
+        assert item.foo == 'bar'
+
+    def test_missing_attribute(self):
+        item = base.BaseModel(None)
+        with pytest.raises(AttributeError, match='BaseModel instance does not have foo_bar key in data dictionary'):
+            item.foo_bar
+
+    def test_update_data(self):
+        item = base.BaseModel(None, id=333)
+        with pytest.raises(AssertionError, match='Existing id does not match update data 333!=777'):
+            # noinspection PyProtectedMember
+            item._update_data({'id': 777})

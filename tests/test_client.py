@@ -1,5 +1,4 @@
 # coding=utf-8
-import json
 
 import pytest
 from mock import MagicMock
@@ -43,12 +42,29 @@ def test_base_url_validation():
         core.Client(base_url='foo', api_token='')
 
 
-def test_error_message_colletion(client, mocker):
+def test_error_message_collection(client, mocker):
     factory = mocker.patch('fakturownia.core.Client.request_factory')
     response = MagicMock()
     response.raise_for_status.side_effect = HTTPError('foo')
-    response.json.return_value = json.loads('{"code":"error","message":{"seller_name":["- nie może być puste"],"number":["- nie może być puste"]}}')
+    response.json.return_value = {"code": "error", "message": 'bad things'}
     factory.return_value = response
     with pytest.raises(HttpException) as ex:
         client.request(None, 'api')
-    assert """foo - {'number': ['- nie może być puste'], 'seller_name': ['- nie może być puste']}""" == str(ex.value)
+    assert """foo - bad things""" == str(ex.value)
+
+
+def test_error_exception_chaining(client, mocker):
+    factory = mocker.patch('fakturownia.core.Client.request_factory')
+    response = MagicMock()
+    response.raise_for_status.side_effect = HTTPError('foo')
+    response.json.return_value = {"foo": "bar"}
+    factory.return_value = response
+    with pytest.raises(HttpException) as ex:
+        client.request(None, 'api')
+    assert """foo""" == str(ex.value)
+
+
+def test_get(client, mocker):
+    request = mocker.patch('fakturownia.core.Client.request')
+    client.get('foo')
+    request.assert_called_with('GET', 'foo', headers=None, params={'api_token': 'fake-key'})

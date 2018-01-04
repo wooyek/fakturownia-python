@@ -11,13 +11,13 @@ class FakturowniaException(Exception):
 class ClientException(FakturowniaException):
     """Base client exception with data attribute"""
 
-    def __init__(self, message, data=None, *args: object) -> None:
+    def __init__(self, message, data=None, *args):
         super(ClientException, self).__init__(message, *args)
         self.data = data
 
 
 class HttpException(ClientException):
-    def __init__(self, message, response, data=None, *args) -> None:
+    def __init__(self, message, response, data=None, *args):
         # noinspection PyUnresolvedReferences
         self.message = message
         self.status_code = response.status_code

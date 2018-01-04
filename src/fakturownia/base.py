@@ -23,7 +23,7 @@ class BaseModel(object):
         data = self._data.copy()
         # if data['id'] is None:
         #     data.pop('id')
-        return {self.data_wrap: data}
+        return {self._data_wrap: data}
 
     def get(self):
         response = self._client.get(self.get_endpoint())
@@ -32,8 +32,8 @@ class BaseModel(object):
 
     def get_endpoint(self, extra=''):
         if self.id:
-            return '{}/{}{}.json'.format(self.endpoint, self.id, extra)
-        return self.endpoint + ".json"
+            return '{}/{}{}.json'.format(self._endpoint, self.id, extra)
+        return self._endpoint + ".json"
 
     def _update_data(self, data):
         new_id = data.get('id', None)
@@ -48,7 +48,8 @@ class BaseModel(object):
 
     def __getattr__(self, key):
         if key not in self._data:
-            raise AttributeError
+            msg = '{} instance does not have {} key in data dictionary'
+            raise AttributeError(msg.format(self.__class__.__name__, key))
         return self._data[key]
 
     __getitem__ = __getattr__

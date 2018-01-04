@@ -1,9 +1,11 @@
 # coding=utf-8
 import json
 import logging
+import sys
 
 import envparse
 import requests
+import six
 from requests import HTTPError
 from requests.structures import CaseInsensitiveDict
 from urllib3.util import parse_url
@@ -90,8 +92,9 @@ class Client(object):
         except HTTPError as ex:
             data = response.json()
             if 'code' in data and data['code'] == 'error':
-                messages = data['message']
-            raise HttpException(str(ex) + " - " + str(messages), response)
+                msg = str(ex) + " - " + str(data['message'])
+                six.reraise(HttpException, HttpException(msg, response), sys.exc_info()[2])
+            raise six.reraise(HttpException, HttpException(ex, response), sys.exc_info()[2])
 
 
 def get_default_client():

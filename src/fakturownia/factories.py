@@ -44,9 +44,10 @@ class InvoiceFactory(factory.Factory):
     buyer_country = factory.Faker('country')
     buyer_email = factory.Faker('niepodam_email')
 
+    # noinspection PyUnusedLocal
     @factory.post_generation
     def positions(self, create, extracted, **kwargs):
-        if extracted is None:
+        if extracted is None:  # pragma: no branch
             extracted = InvoicePosition.create_batch(3)
         self.positions = extracted
 
