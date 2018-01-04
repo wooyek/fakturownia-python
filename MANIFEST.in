@@ -48,7 +48,7 @@ recursive-include src *.pot
 recursive-include bin * *.*
 recursive-include tests *.env
 recursive-include tests *.py
-
+recursive-include tests *.json
 
 exclude example_project/.idea/workspace.xml
 recursive-include example_project *.html
