@@ -77,7 +77,7 @@ coverage-report: coverage ## check code coverage and view report in the browser
 docs: ## generate Sphinx HTML documentation, including API docs
 	rm -f docs/fakturownia*.rst
 	rm -f docs/modules.rst
-	sphinx-apidoc -o docs/ -H "Api docs" src
+	sphinx-apidoc -o docs/ -H "Api docs" src */migrations/*
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
 
@@ -118,6 +118,8 @@ upgrade: ## upgrade frozen requirements to the latest version
 	pipenv install --dev -r requirements/development.txt
 	pipenv lock --requirements > requirements.txt
 	sort requirements.txt -o requirements.txt
+	git add Pipfile Pipfile.lock requirements.txt
+	git commit -m "Requirements upgrade"
 
 release: upgrade sync lint tox bump dist ## build new package version release and sync repo
 	git checkout develop
