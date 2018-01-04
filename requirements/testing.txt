@@ -6,6 +6,7 @@ pytest-xdist
 pytest-html
 pytest-sugar
 pytest-cov
+pytest-mock
 factory-boy
 psycopg2
 pathlib ; python_version < '3.3'

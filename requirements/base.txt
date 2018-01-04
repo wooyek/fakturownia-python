@@ -3,7 +3,9 @@
 # Local proprietary packages
 --find-links=requirements
 # Other dependencies
+six
 click
+envparse
 enum34 ; python_version < '3.4'
 pathlib ; python_version < '3.3'
 requests

@@ -63,6 +63,7 @@ Running Tests
 Does the code actually work?
 
 ::
+
     $ pipenv install --dev
     $ pipenv shell
     $ tox

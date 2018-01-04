@@ -21,6 +21,7 @@ include .tmp/.gitignore
 recursive-exclude * __pycache__
 recursive-exclude * *.py[co]
 recursive-exclude * .eggs .tox .tmp
+recursive-exclude tests *.env
 
 recursive-include .github *.*
 recursive-include requirements *.*
@@ -47,7 +48,7 @@ recursive-include src *.pot
 recursive-include bin * *.*
 recursive-include tests *.env
 recursive-include tests *.py
-
+recursive-include tests *.json
 
 exclude example_project/.idea/workspace.xml
 recursive-include example_project *.html
