@@ -26,7 +26,7 @@ def sandbox_client(request):
 
     env = envparse.Env()
     env.read_envfile(str(secrets))
-    if not env.bool('FAKTUROWNIA_SANDBOX_ENABLED'):
+    if not env.bool('FAKTUROWNIA_SANDBOX_ENABLED', default=False):
         pytest.skip('Sandbox calls are disabled')
 
     api_token = env('FAKTUROWNIA_API_TOKEN')
