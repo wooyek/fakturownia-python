@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "8c7ebf12a90ffab771be332b2f694aa37851ce98713d3607a745d77cf50230b0"
+            "sha256": "49d5657cb611d857c8a63367375aa3aa4a3add68e44f74a836d82b343c648c2a"
         },
         "host-environment-markers": {
             "implementation_name": "cpython",
@@ -56,6 +56,12 @@
                 "sha256:2d81cbbe0e73112bdfe6ef8576f2238f2ba27dd0d55752a776c41d38b7da2850"
             ],
             "version": "==1.1.6"
+        },
+        "envparse": {
+            "hashes": [
+                "sha256:4f3b9a27bb55d27f124eb4adf006fec05e4588891c9a054a183a112645056eb7"
+            ],
+            "version": "==0.2.0"
         },
         "idna": {
             "hashes": [
@@ -237,6 +243,12 @@
                 "sha256:2d81cbbe0e73112bdfe6ef8576f2238f2ba27dd0d55752a776c41d38b7da2850"
             ],
             "version": "==1.1.6"
+        },
+        "envparse": {
+            "hashes": [
+                "sha256:4f3b9a27bb55d27f124eb4adf006fec05e4588891c9a054a183a112645056eb7"
+            ],
+            "version": "==0.2.0"
         },
         "eventlet": {
             "hashes": [
@@ -473,10 +485,10 @@
         },
         "pytest-html": {
             "hashes": [
-                "sha256:7d0064c2f3a8b9e03c7f10a39403fa68d6c5380ce416f4bd310703455a5bf778",
-                "sha256:d973b5bc997f117bd55314d01f6e19433f06a4c405530aa7826481d03b778536"
+                "sha256:135ea10b9ec0a5e370dc1820a5552d761aa3fec8400eabc0b06646f90f5c820e",
+                "sha256:d6ae1ae5d10158d290b603ccf46b5d103e93cf7d67df42bb7d6516fb4f1317f3"
             ],
-            "version": "==1.16.0"
+            "version": "==1.16.1"
         },
         "pytest-metadata": {
             "hashes": [
@@ -484,6 +496,13 @@
                 "sha256:26761319ecc916f16dc95f166e41e041d50a6d587d8332300594dfcfda6a7199"
             ],
             "version": "==1.5.1"
+        },
+        "pytest-mock": {
+            "hashes": [
+                "sha256:7ed6e7e8c636fd320927c5d73aedb77ac2eeb37196c3410e6176b7c92fdf2f69",
+                "sha256:920d1167af5c2c2ad3fa0717d0c6c52e97e97810160c15721ac895cac53abb1c"
+            ],
+            "version": "==1.6.3"
         },
         "pytest-sugar": {
             "hashes": [

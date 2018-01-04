@@ -11,6 +11,7 @@ click = "*"
 "enum34" = "*"
 pathlib = "*"
 requests = "*"
+envparse = "*"
 
 
 [dev-packages]
@@ -41,3 +42,4 @@ sphinx_rtd_theme = "*"
 docutils = "==0.13.1"
 sphinxcontrib-spelling = "*"
 pyenchant = "*"
+pytest-mock = "*"
