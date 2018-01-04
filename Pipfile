@@ -26,7 +26,7 @@ pytest-cov = "*"
 "psycopg2" = "*"
 pathlib = "*"
 "enum34" = "*"
-"fa3f3bd" = {path = "/data/work/wooyek/fakturownia-python", editable = true}
+"fa3f3bd" = {editable = true, path = "/data/work/wooyek/fakturownia-python"}
 "bump2version" = "*"
 check-manifest = "*"
 codecov = "*"
