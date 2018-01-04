@@ -1,8 +1,5 @@
 # coding=utf-8
-import inspect
 import logging
-
-import sys
 
 log = logging.getLogger(__name__)
 

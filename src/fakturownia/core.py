@@ -4,13 +4,13 @@ import logging
 
 import envparse
 import requests
-from fakturownia.exceptions import HttpException
-from fakturownia import endpoints
 from requests import HTTPError
 from requests.structures import CaseInsensitiveDict
 from urllib3.util import parse_url
 
 from . import __version__ as version
+from fakturownia import endpoints
+from fakturownia.exceptions import HttpException
 
 log = logging.getLogger(__file__)
 

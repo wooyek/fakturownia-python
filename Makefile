@@ -49,7 +49,7 @@ clean-test: ## remove test and coverage artifacts
 	rm -fr htmlcov/
 
 isort:
-	isort --verbose --recursive src tests example_project setup.py
+	isort --verbose --recursive src tests setup.py
 
 lint: ## check style with flake8
 	flake8 src tests setup.py manage.py
@@ -62,7 +62,7 @@ test: ## run tests quickly with the default Python
 
 tox: ## run tests on every Python version with tox
 	tox --skip-missing-interpreters --recreate
-	
+
 detox: ## run tests on every Python version with tox
 	detox --skip-missing-interpreters --recreate
 

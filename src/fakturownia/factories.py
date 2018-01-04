@@ -3,8 +3,8 @@ import factory
 from factory import DictFactory
 from faker import providers
 
-from fakturownia.core import Client
 from . import endpoints
+from fakturownia.core import Client
 
 
 class TestEmailProvider(providers.BaseProvider):

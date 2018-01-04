@@ -4,14 +4,16 @@
 """Tests for `fakturownia-python` package."""
 import logging
 
-import fakturownia
 import pytest
 from envparse import env
 from faker import Faker
+
+import fakturownia
 from fakturownia.core import get_default_client
 
 fake = Faker()
 log = logging.getLogger(__name__)
+
 
 @pytest.fixture
 def response():

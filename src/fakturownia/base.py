@@ -1,13 +1,9 @@
 # coding=utf-8
 
+
 class BaseEndpoint(object):
     def __init__(self, client):
         self.client = client
-    #
-    # def post(self, ):
-    #     self.client.post(self.endpoint)
-
-    # def create(self, **kwargs):
 
 
 class BaseModel(object):

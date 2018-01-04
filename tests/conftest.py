@@ -1,13 +1,14 @@
 # coding=utf-8
 import logging
-import os
 from pathlib import Path
 
 import envparse
 import pytest
+
 from fakturownia.core import Client
 
 log = logging.getLogger(__name__)
+
 
 @pytest.fixture
 def client():
@@ -31,7 +32,6 @@ def sandbox_client(request):
     api_token = env('FAKTUROWNIA_API_TOKEN')
     base_url = env('FAKTUROWNIA_BASE_URL')
     return Client(api_token=api_token, base_url=base_url)
-
 
 # def pytest_configure(config):
 #     env = envparse.Env()

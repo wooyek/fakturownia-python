@@ -1,14 +1,14 @@
 # coding=utf-8
 import datetime
 import logging
-
 import os
+
 import pytest
 import six
 from mock import MagicMock
 
-from fakturownia import factories
 from . import test_data
+from fakturownia import factories
 
 log = logging.getLogger(__name__)
 
@@ -77,7 +77,7 @@ def test_client_create_invoice_no_id():
     test_data.CLIENT_CREATE_DATA,
     factories.ClientFactory()._data,
 ])
-def test_create_refresh_client_sandbox(sandbox_client, data):
+def test_client_create_invoice_sandbox(sandbox_client, data):
     client = sandbox_client.clients.create(**data)
     invoice = client.create_invoice(positions=[{'product_id': 11912912, 'quantity': 100}])
     invoice.get()
