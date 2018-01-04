@@ -34,9 +34,9 @@ class BaseModel(object):
         self._update_data(response)
         return self
 
-    def get_endpoint(self):
+    def get_endpoint(self, extra=''):
         if self.id:
-            return '{}/{}.json'.format(self.endpoint, self.id)
+            return '{}/{}{}.json'.format(self.endpoint, self.id, extra)
         return self.endpoint + ".json"
 
     def _update_data(self, data):

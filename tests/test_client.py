@@ -1,4 +1,12 @@
 # coding=utf-8
+import json
+
+import pytest
+from mock import MagicMock
+from requests import HTTPError
+
+from fakturownia import core
+from fakturownia.exceptions import HttpException
 
 
 def test_default_headers(client):
@@ -28,3 +36,19 @@ def test_build_payload(client):
     data = {'foo': 'bar'}
     payload = client.build_payload(data)
     assert payload['foo'] == 'bar'
+
+
+def test_base_url_validation():
+    with pytest.raises(ValueError, match='Invalid url: foo'):
+        core.Client(base_url='foo', api_token='')
+
+
+def test_error_message_colletion(client, mocker):
+    factory = mocker.patch('fakturownia.core.Client.request_factory')
+    response = MagicMock()
+    response.raise_for_status.side_effect = HTTPError('foo')
+    response.json.return_value = json.loads('{"code":"error","message":{"seller_name":["- nie może być puste"],"number":["- nie może być puste"]}}')
+    factory.return_value = response
+    with pytest.raises(HttpException) as ex:
+        client.request(None, 'api')
+    assert """foo - {'number': ['- nie może być puste'], 'seller_name': ['- nie może być puste']}""" == str(ex.value)

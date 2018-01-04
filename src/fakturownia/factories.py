@@ -13,27 +13,10 @@ class TestEmailProvider(providers.BaseProvider):
 
 
 factory.Faker.add_provider(TestEmailProvider)
-
-
-class BaseFactory(factory.Factory):
-    class Meta:
-        abstract = True
-
-    @classmethod
-    def _build(cls, model_class, *args, **kwargs):
-        if args:
-            raise ValueError("DictFactory %r does not support Meta.inline_args.", cls)
-        return model_class(**kwargs)
-
-    @classmethod
-    def _create(cls, model_class, *args, **kwargs):
-        return cls._build(model_class, *args, **kwargs)
-
-
 client = Client(api_token='invalid-token', base_url='http://invalid.example.com')
 
 
-class InvoiceFactory(BaseFactory):
+class InvoiceFactory(factory.Factory):
     class Meta:
         model = endpoints.Invoice
 
@@ -76,7 +59,7 @@ class InvoicePosition(DictFactory):
     discount = 1.33
 
 
-class ClientFactory(BaseFactory):
+class ClientFactory(factory.Factory):
     class Meta:
         model = endpoints.Client
 

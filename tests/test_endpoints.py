@@ -1,7 +1,10 @@
 # coding=utf-8
+import datetime
 import logging
 
+import os
 import pytest
+import six
 from mock import MagicMock
 
 from fakturownia import factories
@@ -27,7 +30,7 @@ def test_create_invioce(endpoint, mocker):
     test_data.INVOICE_CREATE_DATA,
     factories.InvoiceFactory()._data,
 ])
-def test_create_refresh_invoice_sandbox(sandbox_client, data):
+def test_create_refresh_send_invoice_sandbox(sandbox_client, data):
     invoice = sandbox_client.invoices.create(**data)
     assert invoice
     invoice.get()
@@ -35,6 +38,13 @@ def test_create_refresh_invoice_sandbox(sandbox_client, data):
     log.debug("payment_url: %s", invoice.payment_url)
     assert invoice.id
     assert invoice.payment_url
+
+
+@pytest.mark.parametrize("buyer_email", ['fakturownia@niepodam.pl', os.environ.get('FAKTUROWNIA_SANDBOX_EMAIL', 'dummy@niepodam.pl')])
+def test_send_invoice(sandbox_client, buyer_email):
+    invoice = factories.InvoiceFactory(client=sandbox_client, buyer_email=buyer_email)
+    invoice.post()
+    invoice.send_by_email()
 
 
 @pytest.mark.parametrize("data", [
@@ -76,3 +86,11 @@ def test_create_refresh_client_sandbox(sandbox_client, data):
     assert invoice.payment_url
 
 
+def test_dates_on_invoice():
+    invoice = factories.InvoiceFactory()
+    assert isinstance(invoice.sell_date, datetime.date)
+    assert isinstance(invoice.issue_date, datetime.date)
+    assert isinstance(invoice.payment_to, datetime.date)
+    assert isinstance(invoice._data['sell_date'], six.string_types)
+    assert isinstance(invoice._data['issue_date'], six.string_types)
+    assert isinstance(invoice._data['payment_to'], six.string_types)

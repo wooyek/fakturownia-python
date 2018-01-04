@@ -12,8 +12,8 @@ class DateProperty(object):
         self.value = None
 
     def __get__(self, instance, owner):
-        value = instance.data.get(self.name)
-        return datetime.strptime('%Y-%m-%d', value).date() if value and isinstance(value, six.string_types) else value
+        value = instance._data.get(self.name)
+        return datetime.strptime(value, '%Y-%m-%d').date() if value and isinstance(value, six.string_types) else value
 
     def __set__(self, instance, value):
         if not isinstance(value, six.string_types):
@@ -36,7 +36,8 @@ class Invoice(BaseModel):
     payment_to = DateProperty('payment_to')
 
     def send_by_email(self):
-        self.client.invoices.send_by_email(self.id)
+        endpoint = self.get_endpoint('/send_by_email')
+        self._client.post(endpoint)
 
 
 class Clients(BaseEndpoint):
@@ -53,4 +54,3 @@ class Client(BaseModel):
         assert self.id
         kwargs['client_id'] = self.id
         return self._client.invoices.create(**kwargs)
-
