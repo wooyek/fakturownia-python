@@ -70,7 +70,7 @@ if sys.argv[-1] == 'tag':
     sys.exit()
 
 setup(
-    name='fakturownia',
+    name='fakturownia-python',
     version=version,
     description="""Python client library for the Fakturownia API""",
     long_description=readme + '\n\n' + history,

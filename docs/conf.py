@@ -40,9 +40,9 @@ modindex_common_prefix = ['fakturownia.']
 # html_domain_indices = ['py-modindex']  # ignore np-modindex
 
 # TODO: Remove those ignores once you setup monitoring services and their links in documentation
-linkcheck_ignore2 = [
+linkcheck_ignore = [
     r'https://saythanks.io/to/.+',
-    r'https://fakturownia.readthedocs.io.*',
+    r'https://fakturownia-python.readthedocs.io.*',
     r'https://codeclimate.com/github/wooyek/fakturownia-python.*',
     r'https://github.com/wooyek/fakturownia-python.*',
     r'https://codecov.io/gh/wooyek/fakturownia-python.*',

@@ -5,12 +5,6 @@ class BaseEndpoint(object):
     def __init__(self, client):
         self.client = client
 
-    def create(self, **kwargs):
-        return self.model(self.client, **kwargs).post()
-
-    def __getitem__(self, key):
-        return self.model(client=self.client, id=key).get()
-
 
 class BaseModel(object):
     def __init__(self, client, **kwargs):
@@ -19,34 +13,21 @@ class BaseModel(object):
         for k, v in kwargs.items():
             setattr(self, k, v)
 
-    def get_raw_data(self):
-        return self._data
-
-    def post(self, **kwargs):
-        data = self.prepare_post_data(**kwargs)
+    def post(self):
+        data = self.prepare_post_data()
         response = self._client.post(self.get_endpoint(), data)
         self._update_data(response)
         return self
 
-    def put(self, **kwargs):
-        data = self.prepare_post_data(**kwargs)
-        response = self._client.put(self.get_endpoint(), data)
-        self._update_data(response)
-        return self
-
-    def prepare_post_data(self, **kwargs):
-        data = kwargs or self._data.copy()
-        if 'id' in self._data and 'id' not in data:
-            data['id'] = self._data['id']
+    def prepare_post_data(self):
+        data = self._data.copy()
+        # if data['id'] is None:
+        #     data.pop('id')
         return {self._data_wrap: data}
 
     def get(self):
         response = self._client.get(self.get_endpoint())
         self._update_data(response)
-        return self
-
-    def delete(self):
-        response = self._client.delete(self.get_endpoint())
         return self
 
     def get_endpoint(self, extra=''):
