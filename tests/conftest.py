@@ -1,11 +1,12 @@
 # coding=utf-8
 import logging
+import os
 from pathlib import Path
 
-import envparse
 import pytest
 
-from fakturownia.core import Client
+from fakturownia.core import ApiClient
+from fakturownia.settings import get_env_from_file
 
 logging.basicConfig(format='%(asctime)s %(levelname)-7s %(thread)-5d %(filename)s:%(lineno)s | %(funcName)s | %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 logging.getLogger().setLevel(logging.DEBUG)
@@ -17,28 +18,24 @@ log = logging.getLogger(__name__)
 
 @pytest.fixture
 def client():
-    return Client('fake-key', 'https://fakturownia.example.com')
-
-
-# api_call = pytest.mark.skipif('TRAVIS' in os.environ, reason="Make an actual API call")
+    return ApiClient('fake-key', 'https://fakturownia.example.com')
 
 
 @pytest.fixture
-def sandbox_client(request):
-    secrets = Path(__file__).parent / 'secrets.env'
-    if not secrets.exists:
-        pytest.skip('Requires valid API token in: {}'.format(secrets))
+def secrets():
+    env_file = Path(__file__).parents[1] / 'secrets.env'
+    if not env_file.exists:
+        pytest.skip('Requires an environment file with secret settings: {}'.format(env_file))
 
-    env = envparse.Env()
-    env.read_envfile(str(secrets))
-    if not env.bool('FAKTUROWNIA_SANDBOX_ENABLED', default=False):
+    return get_env_from_file(env_file)
+
+
+@pytest.fixture
+def sandbox_client(request, secrets):
+    sandbox_enabled = bool(secrets.get('FAKTUROWNIA_SANDBOX_ENABLED', False))
+    if not sandbox_enabled:
         pytest.skip('Sandbox calls are disabled')
 
-    api_token = env('FAKTUROWNIA_API_TOKEN')
-    base_url = env('FAKTUROWNIA_BASE_URL')
-    return Client(api_token=api_token, base_url=base_url)
-
-# def pytest_configure(config):
-#     env = envparse.Env()
-#     env.read_envfile()
-#     log.debug("FAKTUROWNIA_SANDBOX_ENABLED: %s", )
+    api_token = secrets.get('FAKTUROWNIA_API_TOKEN', None) or os.environ.get('FAKTUROWNIA_API_TOKEN')
+    base_url = secrets.get('FAKTUROWNIA_BASE_URL', None)
+    return ApiClient(api_token, base_url)

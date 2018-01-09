@@ -34,6 +34,7 @@ class Invoice(BaseModel):
         assert self.id, 'Cannot send invoice without id'
         endpoint = self.get_endpoint('/send_by_email')
         self._client.post(endpoint)
+        return self
 
     def mark_paid(self):
         return self.put(status='paid')

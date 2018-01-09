@@ -7,9 +7,9 @@ import pytest
 import six
 from mock import MagicMock
 
-from . import test_data
 from fakturownia import base, factories
 from fakturownia.exceptions import HttpException
+from . import test_data
 
 log = logging.getLogger(__name__)
 
@@ -22,6 +22,11 @@ INVOICE_CREATE = test_data.INVOICE_CREATE
 @pytest.fixture(params=["invoices", "clients"])
 def endpoint(request, client):
     return getattr(client, request.param)
+
+
+@pytest.fixture
+def existing_product_id(secrets):
+    return secrets['FAKTUROWNIA_EXISTING_PRODUCT_ID']
 
 
 def test_create_invoice(endpoint, mocker):
@@ -81,9 +86,9 @@ class ClientTests(object):
         CLIENT_CREATE,
         factories.ClientFactory().get_raw_data(),
     ])
-    def test_client_create_invoice_sandbox(self, sandbox_client, data):
+    def test_client_create_invoice_sandbox(self, sandbox_client, data, existing_product_id):
         client = sandbox_client.clients.create(**data)
-        invoice = client.create_invoice(positions=[{'product_id': 11912912, 'quantity': 100}])
+        invoice = client.create_invoice(positions=[{'product_id': existing_product_id, 'quantity': 100}])
         invoice.get()
         log.debug("id: %s", client.id)
         assert invoice.id
@@ -117,7 +122,7 @@ class InvoiceTests(object):
         assert invoice.get_raw_data()['sell_date'] == '1980-08-14'
 
     def test_send_by_email(self, mocker):
-        post = mocker.patch('fakturownia.core.Client.post')
+        post = mocker.patch('fakturownia.core.ApiClient.post')
         invoice = factories.InvoiceFactory(id='666')
         invoice.send_by_email()
         post.assert_called_with('invoices/666/send_by_email.json')
@@ -147,7 +152,7 @@ class InvoiceTests(object):
 # noinspection PyMethodMayBeStatic
 class BaseModelTests(object):
     def test_get(self, client, mocker):
-        client_get = mocker.patch('fakturownia.core.Client.get')
+        client_get = mocker.patch('fakturownia.core.ApiClient.get')
         client_get.return_value = {'foo': 'bar'}
         item = base.BaseModel(client, _endpoint='api')
         item.get()

@@ -4,12 +4,14 @@
 """Tests for `fakturownia-python` package."""
 import logging
 
+import os
 import pytest
 from envparse import env
 from faker import Faker
 
 import fakturownia
 from fakturownia.core import get_default_client
+from fakturownia.exceptions import FakturowniaException
 
 fake = Faker()
 log = logging.getLogger(__name__)
@@ -37,13 +39,28 @@ def test_version_exists():
 
 
 @pytest.fixture
-def settings():
-    env.read_envfile()
+def api_token():
+    initial_value, clear = None, True
+    if 'FAKTUROWNIA_API_TOKEN' in os.environ:
+        initial_value = os.environ.get('FAKTUROWNIA_API_TOKEN', None)
+        clear = False
+    os.environ['FAKTUROWNIA_API_TOKEN'] = 'invalid-token/invalid-url'
+    yield
+    if clear:
+        del os.environ['FAKTUROWNIA_API_TOKEN']
+    else:
+        os.environ['FAKTUROWNIA_API_TOKEN'] = initial_value
 
 
-def test_client_factory(settings):
+def test_client_factory():
     client = get_default_client()
     assert client is not None
     assert client.api_token
     log.debug("client.base_url: %s", client.base_url)
     assert client.base_url
+
+def test_client_factory_no_environment(mocker):
+    get_env_from_file = mocker.patch('fakturownia.settings.get_env_from_file')
+    get_env_from_file.return_value = {}
+    with pytest.raises(FakturowniaException, match='Please set FAKTUROWNIA_API_TOKEN environment variable'):
+        get_default_client()

@@ -36,7 +36,7 @@ clean-build: ## remove build artifacts
 	rm -fr example_project/.eggs/
 	find . -name '*.egg-info' -exec rm -fr {} +
 	find . -name '*.egg' -exec rm -f {} +
-	find .tmp ! -name '.gitingore' -exec rm -f {} +
+	find .tmp ! -name '.gitignore' ! -name '.tmp' -exec rm -fr {} +
 
 clean-pyc: ## remove Python file artifacts
 	find . -name '*.pyc' -exec rm -f {} +
@@ -71,9 +71,10 @@ coverage: ## check code coverage quickly with the default Python
 	coverage run --source src --parallel-mode setup.py test
 
 coverage-report: coverage ## check code coverage and view report in the browser
+	coverage combine --append
 	coverage report -m
 	coverage html
-	$(BROWSER) tmp/coverage/index.html
+	$(BROWSER) .tmp/coverage/index.html
 
 docs: ## generate Sphinx HTML documentation, including API docs
 	rm -f docs/fakturownia*.rst

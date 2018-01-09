@@ -12,23 +12,67 @@ from urllib3.util import parse_url
 
 from . import __version__ as version
 from fakturownia import endpoints
-from fakturownia.exceptions import HttpException
+from fakturownia.exceptions import HttpException, FakturowniaException
 
 log = logging.getLogger(__file__)
 
 
-class Client(object):
+class ApiClient(object):
+    """ Fakturownia API client
+
+    Here is an example of how to crete an invoice.
+    But first make sure you have set  `FAKTUROWNIA_API_TOKEN` environment variable.
+
+    >>> import os
+    >>> os.environ.get('FAKTUROWNIA_API_TOKEN', 'Missing key')  # doctest: +ELLIPSIS
+    '...'
+    >>> from fakturownia import get_default_client
+    >>> api = get_default_client()
+    >>> invoice = api.invoices.create(
+    ...     seller_name='Kabaret Starszych Panów',
+    ...     buyer_name='Odrażający drab',
+    ...     positions=[{
+    ...         'name': 'Smolna szczapa',
+    ...         'quantity': 5,
+    ...         'total_price_gross': 7.33,
+    ...     }],
+    ... )
+
+    This instance is only partially updated as create returns only subset of
+    data properties, to get all we need to update our instance.
+
+    This shows payment_url but only if you have payments enabled.
+
+    >>> invoice.get() # doctest: +ELLIPSIS
+    <fakturownia.endpoints.Invoice object at 0x...>
+    >>> invoice.payment_url # doctest: +ELLIPSIS
+    '...'
+
+    We can mark this invoice as paid.
+
+    >>> invoice.mark_paid() # doctest: +ELLIPSIS
+    <fakturownia.endpoints.Invoice object at 0x...>
+
+    You can chain your calls
+
+    >>> invoice.put(buyer_email='kominek@niepodam.pl').send_by_email() # doctest: +ELLIPSIS
+    <fakturownia.endpoints.Invoice object at 0x...>
+
+    """
+
     def __init__(self, api_token, base_url=None):
         self.api_token = api_token
         if base_url is not None:
             self.base_url = base_url
         else:
-            self.base_url = 'https://{}.fakturownia.pl'.format(self.api_token.split('/')[1])
+            self.base_url = 'https://{}.fakturownia.pl/'.format(self.api_token.split('/')[1])
         self.default_headers = {
             'accept': "application/json",
             'content-type': "application/json",
             'user-agent': "Fakturownia Python/" + version
         }
+
+        log.info("Fakturownia: base_url: %s api_token: ***%s", self.base_url, self.api_token[self.api_token.index('/'):] if '/' in self.api_token else '')
         self.invoices = endpoints.Invoices(self)
         self.clients = endpoints.Clients(self)
 
@@ -114,9 +158,14 @@ def get_default_client():
     Factory function for Fakturownia API client with configuration options
     taken from environment
 
-    :return: Client instance
+    :return: ApiClient instance
     """
-    env = envparse.Env()
-    api_token = env('FAKTUROWNIA_API_TOKEN')
-    base_url = env('FAKTUROWNIA_BASE_URL')
-    return Client(api_token=api_token, base_url=base_url)
+    import os
+    from fakturownia import settings
+    api_token = os.environ.get('FAKTUROWNIA_API_TOKEN', None)
+    if api_token is None:
+        api_token = settings.get_key_from_file()
+    if api_token is None:
+        raise FakturowniaException('Please set FAKTUROWNIA_API_TOKEN environment variable')
+    base_url = os.environ.get('FAKTUROWNIA_BASE_URL', None)
+    return ApiClient(api_token=api_token, base_url=base_url)

@@ -4,7 +4,7 @@ from factory import DictFactory
 from faker import providers
 
 from . import endpoints
-from fakturownia.core import Client
+from fakturownia.core import ApiClient
 
 
 class TestEmailProvider(providers.BaseProvider):
@@ -13,7 +13,7 @@ class TestEmailProvider(providers.BaseProvider):
 
 
 factory.Faker.add_provider(TestEmailProvider)
-client = Client(api_token='invalid-token', base_url='http://invalid.example.com')
+client = ApiClient(api_token='invalid-token', base_url='http://invalid.example.com')
 
 
 class InvoiceFactory(factory.Factory):

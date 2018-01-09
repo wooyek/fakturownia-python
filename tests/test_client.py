@@ -39,16 +39,16 @@ def test_build_payload(client):
 
 def test_base_url_validation():
     with pytest.raises(ValueError, match='Invalid url: foo'):
-        core.Client(base_url='foo', api_token='')
+        core.ApiClient(base_url='foo', api_token='')
 
 
 def test_base_url_from_key():
-    client = core.Client(api_token='abc/example.com')
-    assert client.base_url == "https://example.com.fakturownia.pl"
+    client = core.ApiClient(api_token='abc/example.com')
+    assert client.base_url == "https://example.com.fakturownia.pl/"
 
 
 def test_error_message_collection(client, mocker):
-    factory = mocker.patch('fakturownia.core.Client.request_factory')
+    factory = mocker.patch('fakturownia.core.ApiClient.request_factory')
     response = MagicMock()
     response.raise_for_status.side_effect = HTTPError('foo')
     response.json.return_value = {"code": "error", "message": 'bad things'}
@@ -59,7 +59,7 @@ def test_error_message_collection(client, mocker):
 
 
 def test_error_exception_chaining(client, mocker):
-    factory = mocker.patch('fakturownia.core.Client.request_factory')
+    factory = mocker.patch('fakturownia.core.ApiClient.request_factory')
     response = MagicMock()
     response.raise_for_status.side_effect = HTTPError('foo')
     response.json.return_value = {"foo": "bar"}
@@ -70,6 +70,6 @@ def test_error_exception_chaining(client, mocker):
 
 
 def test_get(client, mocker):
-    request = mocker.patch('fakturownia.core.Client.request')
+    request = mocker.patch('fakturownia.core.ApiClient.request')
     client.get('foo')
     request.assert_called_with('GET', 'foo', headers=None, params={'api_token': 'fake-key'})

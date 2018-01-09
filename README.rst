@@ -45,7 +45,7 @@ Features
 --------
 
 * ☑ Invoice CRUD plus `send_by_email` and 'mark_paid`
-* ☑ Client CRUD
+* ☑ ApiClient CRUD
 * ☐ Products CRUD
 * ☐ Warehouse documents CRUD
 * ☐ Accounts management
@@ -60,6 +60,43 @@ Install Fakturownia::
     pip install fakturownia-python
     python
 
+
+Play with `fakturownia APIs`_ in python interpreter::
+
+    >>> import os
+    >>> os.environ.get('FAKTUROWNIA_API_TOKEN', 'Missing key')
+    '...'
+    >>> from fakturownia import get_default_client
+    >>> api = get_default_client()
+    >>> invoice = api.invoices.create(
+    ...     seller_name='Kabaret Starszych Panów',
+    ...     buyer_name='Odrażający drab',
+    ...     positions=[{
+    ...         'name': 'Smolna szczapa',
+    ...         'quantity': 5,
+    ...         'total_price_gross': 7.33,
+    ...     }],
+    ... )
+
+    This instance is only partially updated as create returns only subset of
+    data properties, to get all we need to update our instance.
+
+    This shows payment_url but only if you have payments enabled.
+
+    >>> invoice.get()
+    <fakturownia.endpoints.Invoice object at 0x...>
+    >>> invoice.payment_url # doctest: +ELLIPSIS
+    '...'
+
+    We can mark this invoice as paid.
+
+    >>> invoice.mark_paid()
+    <fakturownia.endpoints.Invoice object at 0x...>
+
+    You can chain your calls
+
+    >>> invoice.put(buyer_email='kominek@niepodam.pl').send_by_email()
+    <fakturownia.endpoints.Invoice object at 0x...>
 
 Running Tests
 -------------
@@ -89,3 +126,4 @@ This package was created with Cookiecutter_ and the `wooyek/cookiecutter-pylib`_
 .. _Cookiecutter: https://github.com/audreyr/cookiecutter
 .. _`wooyek/cookiecutter-pylib`: https://github.com/wooyek/cookiecutter-pylib
 .. _`pipenv`: https://docs.pipenv.org/install#fancy-installation-of-pipenv
+.. _`fakturownia APIs`: https://github.com/fakturownia/api
