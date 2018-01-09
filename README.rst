@@ -118,7 +118,7 @@ Help wanted
 
 This library is not yet complete i does what was needed by up to date contributors but more can be done.
 You can implement new api endpoints and write test for them, it's actually straightforward and new classes are will be simple,
-but test are need some effort. We are lazy test writers and because we don't want to loose 100% coverage so we
+but test are need some effort. We are lazy test writers and because we don't want to compromise coverage so we
 postponed new apis until someone would want to write test.
 
 Another tricky thing is mocking api backend, this it would be nice to have 100% coverage without calling an external service.
