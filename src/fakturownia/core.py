@@ -3,7 +3,6 @@ import json
 import logging
 import sys
 
-import envparse
 import requests
 import six
 from requests import HTTPError
@@ -12,7 +11,7 @@ from urllib3.util import parse_url
 
 from . import __version__ as version
 from fakturownia import endpoints
-from fakturownia.exceptions import HttpException, FakturowniaException
+from fakturownia.exceptions import FakturowniaException, HttpException
 
 log = logging.getLogger(__file__)
 

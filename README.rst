@@ -50,7 +50,7 @@ Features
 * ☐ Warehouse documents CRUD
 * ☐ Accounts management
 
-Please refer to the https://github.com/fakturownia/api_ for full API features
+Please refer to the `fakturownia APIs`_ for full API features
 
 Quickstart
 ----------

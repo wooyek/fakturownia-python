@@ -4,8 +4,6 @@ import re
 import shlex
 from pathlib import Path
 
-import os
-
 log = logging.getLogger(__name__)
 
 

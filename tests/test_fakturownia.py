@@ -3,10 +3,9 @@
 
 """Tests for `fakturownia-python` package."""
 import logging
-
 import os
+
 import pytest
-from envparse import env
 from faker import Faker
 
 import fakturownia
@@ -58,6 +57,7 @@ def test_client_factory():
     assert client.api_token
     log.debug("client.base_url: %s", client.base_url)
     assert client.base_url
+
 
 def test_client_factory_no_environment(mocker):
     get_env_from_file = mocker.patch('fakturownia.settings.get_env_from_file')

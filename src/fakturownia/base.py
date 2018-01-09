@@ -46,7 +46,7 @@ class BaseModel(object):
         return self
 
     def delete(self):
-        response = self._client.delete(self.get_endpoint())
+        self._client.delete(self.get_endpoint())
         return self
 
     def get_endpoint(self, extra=''):

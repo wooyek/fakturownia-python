@@ -7,9 +7,9 @@ import pytest
 import six
 from mock import MagicMock
 
+from . import test_data
 from fakturownia import base, factories
 from fakturownia.exceptions import HttpException
-from . import test_data
 
 log = logging.getLogger(__name__)
 
