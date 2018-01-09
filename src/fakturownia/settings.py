@@ -2,14 +2,23 @@
 import logging
 import re
 import shlex
-from pathlib import Path
+
+import six
+
+if six.PY3:
+    from pathlib import Path
+else:
+    from pathlib2 import Path
 
 log = logging.getLogger(__name__)
 
 
 def parse_env(content):  # pragma: no cover
+    # content = six.u(content)
     # This comes from evnparse.Env.read_envfile. Kudos!
     for line in content.splitlines():
+        if line.startswith("#"):
+            continue
         tokens = list(shlex.shlex(line, posix=True))
         # parses the assignment statement
         if len(tokens) < 3:
@@ -25,11 +34,12 @@ def parse_env(content):  # pragma: no cover
 
 
 def get_env_from_file(path):
-    path = Path(path)
+    if not isinstance(path, Path):
+        path = Path(path)
     return dict(parse_env(path.read_text()))
 
 
 def get_key_from_file(env_file=None):
     """This is a utili"""
-    env_file = env_file or Path(__file__).parents[2] / 'secrets.env'
+    env_file = env_file or (Path(__file__).parents[2] / 'secrets.env')
     return get_env_from_file(env_file).get('FAKTUROWNIA_API_TOKEN', None)

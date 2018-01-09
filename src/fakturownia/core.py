@@ -9,7 +9,6 @@ from requests import HTTPError
 from requests.structures import CaseInsensitiveDict
 from urllib3.util import parse_url
 
-from . import __version__ as version
 from fakturownia import endpoints
 from fakturownia.exceptions import FakturowniaException, HttpException
 
@@ -45,7 +44,7 @@ class ApiClient(object):
     >>> invoice.get() # doctest: +ELLIPSIS
     <fakturownia.endpoints.Invoice object at 0x...>
     >>> invoice.payment_url # doctest: +ELLIPSIS
-    '...'
+    u'...'
 
     We can mark this invoice as paid.
 
@@ -65,6 +64,7 @@ class ApiClient(object):
             self.base_url = base_url
         else:
             self.base_url = 'https://{}.fakturownia.pl/'.format(self.api_token.split('/')[1])
+        from . import __version__ as version
         self.default_headers = {
             'accept': "application/json",
             'content-type': "application/json",

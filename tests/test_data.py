@@ -1,19 +1,23 @@
 # coding=utf-8
 import json
 import sys
-from json import JSONDecodeError
-from pathlib import Path
 
 import six
+
+if six.PY3:
+    from pathlib import Path
+else:
+    from pathlib2 import Path
+
 
 FIXTURES = Path(__file__).parent / 'fixtures'
 for p in FIXTURES.glob('*.json'):
 
     try:
         globals()[p.stem.upper()] = json.loads(p.read_text())
-    except JSONDecodeError as ex:
+    except ValueError as ex:
         msg = str(ex.msg) + " in " + str(p)
-        raise six.reraise(JSONDecodeError, JSONDecodeError(msg, ex.doc, ex.pos), sys.exc_info()[2])
+        raise six.reraise(ValueError, ValueError(msg, ex.doc, ex.pos), sys.exc_info()[2])
 
 # INVOICE_CREATE_DATA = json.loads((FIXTURES / 'invoice_create.json').read_text())
 # INVOICE_CREATED = json.loads((FIXTURES / 'invoice_created.json').read_text())

@@ -55,13 +55,13 @@ Please refer to the `fakturownia APIs`_ for full API features
 Quickstart
 ----------
 
-Install Fakturownia::
+Install Fakturownia
 
     pip install fakturownia-python
     python
 
 
-Play with `fakturownia APIs`_ in python interpreter::
+Play with `fakturownia APIs`_ in python interpreter
 
     >>> import os
     >>> os.environ.get('FAKTUROWNIA_API_TOKEN', 'Missing key')
@@ -78,22 +78,22 @@ Play with `fakturownia APIs`_ in python interpreter::
     ...     }],
     ... )
 
-    This instance is only partially updated as create returns only subset of
-    data properties, to get all we need to update our instance.
+This instance is only partially updated as create returns only subset of
+data properties, to get all we need to update our instance.
 
-    This shows payment_url but only if you have payments enabled.
+This shows payment_url but only if you have payments enabled
 
     >>> invoice.get()
     <fakturownia.endpoints.Invoice object at 0x...>
-    >>> invoice.payment_url # doctest: +ELLIPSIS
+    >>> invoice.payment_url
     '...'
 
-    We can mark this invoice as paid.
+We can mark this invoice as paid
 
     >>> invoice.mark_paid()
     <fakturownia.endpoints.Invoice object at 0x...>
 
-    You can chain your calls
+You can chain your calls
 
     >>> invoice.put(buyer_email='kominek@niepodam.pl').send_by_email()
     <fakturownia.endpoints.Invoice object at 0x...>
@@ -103,11 +103,11 @@ Running Tests
 
 Does the code actually work?
 
-::
+.. code-block:: sh
 
-    $ pipenv install --dev
-    $ pipenv shell
-    $ tox
+    pipenv install --dev
+    pipenv shell
+    tox
 
 
 We recommend using pipenv_ but a legacy approach to creating virtualenv and installing requirements should also work.
@@ -116,7 +116,17 @@ Please install `requirements/base.txt` and `requirements/development.txt` to set
 Help wanted
 -----------
 
-If want to help please refer to
+This library is not yet complete i does what was needed by up to date contributors but more can be done.
+You can implement new api endpoints and write test for them, it's actually straightforward and new classes are will be simple,
+but test are need some effort. We are lazy test writers and because we don't want to loose 100% coverage so we
+postponed new apis until someone would want to write test.
+
+Another tricky thing is mocking api backend, this it would be nice to have 100% coverage without calling an external service.
+Integrations tests need to stay to verify that this library actually works with the backend but running test without networking
+lags would speed up local development.
+
+For more If want to help please refer to the
+`contributing section <https://fakturownia.readthedocs.io/en/latest/contributing.html>`_ in the docs
 
 Credits
 -------
