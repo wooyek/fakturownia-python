@@ -12,7 +12,7 @@ Python client library for the Fakturownia API
         :target: https://travis-ci.org/wooyek/fakturownia-python
 
 .. image:: https://readthedocs.org/projects/fakturownia-python/badge/?version=latest
-        :target: https://fakturownia-python.readthedocs.io/en/latest/?badge=latest
+        :target: https://fakturownia.readthedocs.io/en/latest/?badge=latest
         :alt: Documentation Status
 .. image:: https://coveralls.io/repos/github/wooyek/fakturownia-python/badge.svg?branch=develop
         :target: https://coveralls.io/github/wooyek/fakturownia-python?branch=develop
@@ -39,14 +39,18 @@ Python client library for the Fakturownia API
 
 
 * Free software: MIT license
-* Documentation: https://fakturownia-python.readthedocs.io.
+* Documentation: https://fakturownia.readthedocs.io
 
 Features
 --------
 
-* Pending :D
+* ☑ Invoice CRUD plus `send_by_email` and 'mark_paid`
+* ☑ Client CRUD
+* ☐ Products CRUD
+* ☐ Warehouse documents CRUD
+* ☐ Accounts management
 
-
+Please refer to the https://github.com/fakturownia/api_ for full API features
 
 Quickstart
 ----------
@@ -54,7 +58,7 @@ Quickstart
 Install Fakturownia::
 
     pip install fakturownia-python
-
+    python
 
 
 Running Tests
@@ -70,8 +74,12 @@ Does the code actually work?
 
 
 We recommend using pipenv_ but a legacy approach to creating virtualenv and installing requirements should also work.
-Please install `requirements/development.txt` to setup virtual env for testing and development.
+Please install `requirements/base.txt` and `requirements/development.txt` to setup virtual env for testing and development.
 
+Help wanted
+-----------
+
+If want to help please refer to
 
 Credits
 -------

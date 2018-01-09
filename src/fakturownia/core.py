@@ -18,9 +18,12 @@ log = logging.getLogger(__file__)
 
 
 class Client(object):
-    def __init__(self, api_token, base_url):
-        self.base_url = base_url
+    def __init__(self, api_token, base_url=None):
         self.api_token = api_token
+        if base_url is not None:
+            self.base_url = base_url
+        else:
+            self.base_url = 'https://{}.fakturownia.pl'.format(self.api_token.split('/')[1])
         self.default_headers = {
             'accept': "application/json",
             'content-type': "application/json",
@@ -50,6 +53,15 @@ class Client(object):
         payload = self.build_payload(data)
         payload = json.dumps(payload)
         return self.request('POST', endpoint, payload=payload, headers=headers)
+
+    def put(self, endpoint, data=None, headers=None):
+        payload = self.build_payload(data)
+        payload = json.dumps(payload)
+        return self.request('PUT', endpoint, payload=payload, headers=headers)
+
+    def delete(self, endpoint, data=None, headers=None):
+        params = self.build_payload(data)
+        return self.request('DELETE', endpoint, params=params, headers=headers)
 
     def get(self, endpoint, data=None, headers=None):
         params = self.build_payload(data)

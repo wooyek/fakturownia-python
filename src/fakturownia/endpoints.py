@@ -23,12 +23,6 @@ class DateProperty(object):
         instance._data[self.name] = value
 
 
-class Invoices(BaseEndpoint):
-
-    def create(self, **kwargs):
-        return Invoice(self.client, **kwargs).post()
-
-
 class Invoice(BaseModel):
     _endpoint = 'invoices'
     _data_wrap = 'invoice'
@@ -41,11 +35,12 @@ class Invoice(BaseModel):
         endpoint = self.get_endpoint('/send_by_email')
         self._client.post(endpoint)
 
+    def mark_paid(self):
+        return self.put(status='paid')
 
-class Clients(BaseEndpoint):
 
-    def create(self, **kwargs):
-        return Client(self.client, **kwargs).post()
+class Invoices(BaseEndpoint):
+    model = Invoice
 
 
 class Client(BaseModel):
@@ -56,3 +51,7 @@ class Client(BaseModel):
         assert self.id
         kwargs['client_id'] = self.id
         return self._client.invoices.create(**kwargs)
+
+
+class Clients(BaseEndpoint):
+    model = Client

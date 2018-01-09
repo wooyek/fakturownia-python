@@ -1,0 +1,25 @@
+{
+  "kind": "vat",
+  "number": null,
+  "sell_date": "2018-01-02",
+  "issue_date": "2018-01-02",
+  "payment_to": "2018-01-09",
+  "seller_name": "Seller SA",
+  "seller_tax_no": "5252445767",
+  "buyer_name": "Client1 SA",
+  "buyer_tax_no": "5252445767",
+  "positions": [
+    {
+      "name": "Produkt A1",
+      "tax": 23,
+      "total_price_gross": 10.23,
+      "quantity": 1
+    },
+    {
+      "name": "Produkt A2",
+      "tax": 0,
+      "total_price_gross": 50,
+      "quantity": 2
+    }
+  ]
+}

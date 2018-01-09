@@ -9,8 +9,14 @@ from mock import MagicMock
 
 from . import test_data
 from fakturownia import base, factories
+from fakturownia.exceptions import HttpException
 
 log = logging.getLogger(__name__)
+
+# noinspection PyUnresolvedReferences
+CLIENT_CREATE = test_data.CLIENT_CREATE
+# noinspection PyUnresolvedReferences
+INVOICE_CREATE = test_data.INVOICE_CREATE
 
 
 @pytest.fixture(params=["invoices", "clients"])
@@ -18,7 +24,7 @@ def endpoint(request, client):
     return getattr(client, request.param)
 
 
-def test_create_invioce(endpoint, mocker):
+def test_create_invoice(endpoint, mocker):
     request = mocker.patch('requests.request')
     request.return_value = MagicMock()
     request.json.return_value = {}
@@ -27,8 +33,8 @@ def test_create_invioce(endpoint, mocker):
 
 
 @pytest.mark.parametrize("data", [
-    test_data.INVOICE_CREATE_DATA,
-    factories.InvoiceFactory()._data,
+    INVOICE_CREATE,
+    factories.InvoiceFactory().get_raw_data(),
 ])
 def test_create_refresh_send_invoice_sandbox(sandbox_client, data):
     invoice = sandbox_client.invoices.create(**data)
@@ -47,63 +53,68 @@ def test_send_invoice(sandbox_client, buyer_email):
     invoice.send_by_email()
 
 
-@pytest.mark.parametrize("data", [
-    test_data.CLIENT_CREATE_DATA,
-    factories.ClientFactory()._data,
-])
-def test_create_refresh_client_sandbox(sandbox_client, data):
-    item = sandbox_client.clients.create(**data)
-    assert item
-    item.get()
-    log.debug("id: %s", item.id)
-    assert item.id
+# noinspection PyMethodMayBeStatic
+class ClientTests(object):
+    @pytest.mark.parametrize("data", [
+        CLIENT_CREATE,
+        factories.ClientFactory().get_raw_data(),
+    ])
+    def test_create_refresh_client_sandbox(self, sandbox_client, data):
+        item = sandbox_client.clients.create(**data)
+        assert item
+        item.get()
+        log.debug("id: %s", item.id)
+        assert item.id
 
-
-def test_client_create_invoice(mocker):
-    invoices_create = mocker.patch('fakturownia.endpoints.Invoices.create')
-    client = factories.ClientFactory(id=777)
-    client.create_invoice()
-    assert invoices_create.called
-
-
-def test_client_create_invoice_no_id():
-    client = factories.ClientFactory()
-    with pytest.raises(AssertionError):
+    def test_client_create_invoice(self, mocker):
+        invoices_create = mocker.patch('fakturownia.endpoints.Invoices.create')
+        client = factories.ClientFactory(id=777)
         client.create_invoice()
+        assert invoices_create.called
 
+    def test_client_create_invoice_no_id(self, ):
+        client = factories.ClientFactory()
+        with pytest.raises(AssertionError):
+            client.create_invoice()
 
-@pytest.mark.parametrize("data", [
-    test_data.CLIENT_CREATE_DATA,
-    factories.ClientFactory()._data,
-])
-def test_client_create_invoice_sandbox(sandbox_client, data):
-    client = sandbox_client.clients.create(**data)
-    invoice = client.create_invoice(positions=[{'product_id': 11912912, 'quantity': 100}])
-    invoice.get()
-    log.debug("id: %s", client.id)
-    assert invoice.id
-    assert invoice.payment_url
+    @pytest.mark.parametrize("data", [
+        CLIENT_CREATE,
+        factories.ClientFactory().get_raw_data(),
+    ])
+    def test_client_create_invoice_sandbox(self, sandbox_client, data):
+        client = sandbox_client.clients.create(**data)
+        invoice = client.create_invoice(positions=[{'product_id': 11912912, 'quantity': 100}])
+        invoice.get()
+        log.debug("id: %s", client.id)
+        assert invoice.id
+        assert invoice.payment_url
+
+    def test_get_client(self, sandbox_client):
+        with pytest.raises(HttpException, match='404 Client Error: Not Found for url') as ex:
+            # noinspection PyStatementEffect
+            sandbox_client.clients[123]
+        assert ex.value.status_code == 404
 
 
 # noinspection PyMethodMayBeStatic
 class InvoiceTests(object):
 
-    # noinspection PyProtectedMember
+    # noinspection PyProtectedMember,PyMethodMayBeStatic
     def test_dates_on_invoice(self):
         invoice = factories.InvoiceFactory()
         assert isinstance(invoice.sell_date, datetime.date)
         assert isinstance(invoice.issue_date, datetime.date)
         assert isinstance(invoice.payment_to, datetime.date)
-        assert isinstance(invoice._data['sell_date'], six.string_types)
-        assert isinstance(invoice._data['issue_date'], six.string_types)
-        assert isinstance(invoice._data['payment_to'], six.string_types)
+        assert isinstance(invoice.get_raw_data()['sell_date'], six.string_types)
+        assert isinstance(invoice.get_raw_data()['issue_date'], six.string_types)
+        assert isinstance(invoice.get_raw_data()['payment_to'], six.string_types)
 
     def test_set_datetime_str(self):
         invoice = factories.InvoiceFactory()
         invoice.sell_date = '1980-08-14'
         assert invoice.sell_date == datetime.date(1980, 8, 14)
         # noinspection PyProtectedMember
-        assert invoice._data['sell_date'] == '1980-08-14'
+        assert invoice.get_raw_data()['sell_date'] == '1980-08-14'
 
     def test_send_by_email(self, mocker):
         post = mocker.patch('fakturownia.core.Client.post')
@@ -116,10 +127,25 @@ class InvoiceTests(object):
         with pytest.raises(AssertionError, match='Cannot send invoice without id'):
             invoice.send_by_email()
 
+    def test_mark_paid(self, sandbox_client):
+        invoice = factories.InvoiceFactory(client=sandbox_client)
+        invoice.post()
+        assert invoice.status == 'issued'
+        invoice.mark_paid()
+        assert invoice.status == 'paid'
+
+    def test_delete(self, sandbox_client):
+        invoice = factories.InvoiceFactory(client=sandbox_client)
+        invoice.post()
+        assert invoice.status == 'issued'
+        invoice.delete()
+        assert invoice.id is not None
+        with pytest.raises(HttpException, match='404 Client Error: Not Found for url'):
+            sandbox_client.invoices[invoice.id]
+
 
 # noinspection PyMethodMayBeStatic
 class BaseModelTests(object):
-
     def test_get(self, client, mocker):
         client_get = mocker.patch('fakturownia.core.Client.get')
         client_get.return_value = {'foo': 'bar'}
@@ -131,6 +157,7 @@ class BaseModelTests(object):
     def test_missing_attribute(self):
         item = base.BaseModel(None)
         with pytest.raises(AttributeError, match='BaseModel instance does not have foo_bar key in data dictionary'):
+            # noinspection PyStatementEffect
             item.foo_bar
 
     def test_update_data(self):
