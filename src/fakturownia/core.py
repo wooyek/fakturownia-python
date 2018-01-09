@@ -44,7 +44,7 @@ class ApiClient(object):
     >>> invoice.get() # doctest: +ELLIPSIS
     <fakturownia.endpoints.Invoice object at 0x...>
     >>> invoice.payment_url # doctest: +ELLIPSIS
-    u'...'
+    '...'
 
     We can mark this invoice as paid.
 

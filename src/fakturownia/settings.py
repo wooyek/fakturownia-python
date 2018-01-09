@@ -34,7 +34,7 @@ def parse_env(content):  # pragma: no cover
 
 
 def get_env_from_file(path):
-    if not isinstance(path, Path):
+    if not isinstance(path, Path): # pragma: no cover
         path = Path(path)
     return dict(parse_env(path.read_text()))
 
