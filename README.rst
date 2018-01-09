@@ -61,7 +61,7 @@ Install Fakturownia
     python
 
 
-Play with `fakturownia APIs`_ in python interpreter
+Play with `fakturownia APIs`_ in python interpreter::
 
     >>> import os
     >>> os.environ.get('FAKTUROWNIA_API_TOKEN', 'Missing key')
@@ -81,19 +81,19 @@ Play with `fakturownia APIs`_ in python interpreter
 This instance is only partially updated as create returns only subset of
 data properties, to get all we need to update our instance.
 
-This shows payment_url but only if you have payments enabled
+This shows payment_url but only if you have payments enabled::
 
     >>> invoice.get()
     <fakturownia.endpoints.Invoice object at 0x...>
     >>> invoice.payment_url
     '...'
 
-We can mark this invoice as paid
+We can mark this invoice as paid::
 
     >>> invoice.mark_paid()
     <fakturownia.endpoints.Invoice object at 0x...>
 
-You can chain your calls
+You can chain your calls::
 
     >>> invoice.put(buyer_email='kominek@niepodam.pl').send_by_email()
     <fakturownia.endpoints.Invoice object at 0x...>
