@@ -36,6 +36,7 @@ clean-build: ## remove build artifacts
 	rm -fr example_project/.eggs/
 	find . -name '*.egg-info' -exec rm -fr {} +
 	find . -name '*.egg' -exec rm -f {} +
+	find .tmp ! -name '.gitingore' -exec rm -f {} +
 
 clean-pyc: ## remove Python file artifacts
 	find . -name '*.pyc' -exec rm -f {} +

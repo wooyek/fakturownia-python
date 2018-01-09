@@ -1,0 +1,40 @@
+{
+  "client": {
+    "id": 9971726,
+    "name": "Morris, Pugh and Mitchell",
+    "tax_no": "9751031112",
+    "post_code": "05186",
+    "city": "South Bonnie",
+    "street": "Knapp Passage",
+    "first_name": "Stephanie",
+    "country": "Myanmar",
+    "email": "sjordan@niepodam.pl",
+    "phone": null,
+    "www": null,
+    "fax": null,
+    "street_no": null,
+    "kind": "buyer",
+    "bank": null,
+    "bank_account": null,
+    "bank_account_id": null,
+    "shortcut": "Morris, Pugh and Mitchell",
+    "note": null,
+    "last_name": "Jacobs",
+    "deleted": false,
+    "discount": null,
+    "payment_to_kind": null,
+    "use_delivery_address": false,
+    "delivery_address": null,
+    "company": true,
+    "mobile_phone": null,
+    "register_number": null,
+    "external_ids": {
+      "fakturownia": 9971726
+    },
+    "buyer": {},
+    "skip_webhooks": true
+  },
+  "app_name": "fakturownia",
+  "api_token": "rodzaj:client:create",
+  "locale": "pl"
+}

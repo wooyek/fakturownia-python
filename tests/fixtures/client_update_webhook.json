@@ -1,0 +1,40 @@
+{
+  "client": {
+    "id": 9971728,
+    "name": "Client1",
+    "tax_no": "5252445767",
+    "post_code": "post-code1",
+    "city": "city1",
+    "street": "street1",
+    "first_name": null,
+    "country": "",
+    "email": "client@example.com",
+    "phone": "phone1",
+    "www": null,
+    "fax": null,
+    "street_no": "street-no1",
+    "kind": "buyer",
+    "bank": "bank1",
+    "bank_account": "bank_account1",
+    "bank_account_id": null,
+    "shortcut": "Client1 (1)",
+    "note": null,
+    "last_name": null,
+    "deleted": false,
+    "discount": null,
+    "payment_to_kind": null,
+    "use_delivery_address": false,
+    "delivery_address": null,
+    "company": true,
+    "mobile_phone": null,
+    "register_number": null,
+    "external_ids": {
+      "fakturownia": 9971728
+    },
+    "buyer": {},
+    "skip_webhooks": true
+  },
+  "app_name": "fakturownia",
+  "api_token": "rodzaj:client:update",
+  "locale": "pl"
+}

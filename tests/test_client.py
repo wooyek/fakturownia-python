@@ -42,6 +42,11 @@ def test_base_url_validation():
         core.Client(base_url='foo', api_token='')
 
 
+def test_base_url_from_key():
+    client = core.Client(api_token='abc/example.com')
+    assert client.base_url == "https://example.com.fakturownia.pl"
+
+
 def test_error_message_collection(client, mocker):
     factory = mocker.patch('fakturownia.core.Client.request_factory')
     response = MagicMock()
