@@ -26,7 +26,7 @@ def endpoint(request, offline_client):
 
 @pytest.fixture
 def existing_product_id(secrets):
-    if not 'FAKTUROWNIA_EXISTING_PRODUCT_ID' in secrets:
+    if 'FAKTUROWNIA_EXISTING_PRODUCT_ID' not in secrets:
         pytest.skip('Requires an environment FAKTUROWNIA_EXISTING_PRODUCT_ID setting')
     return secrets['FAKTUROWNIA_EXISTING_PRODUCT_ID']
 
