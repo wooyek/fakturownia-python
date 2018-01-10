@@ -8,32 +8,32 @@ from fakturownia import core
 from fakturownia.exceptions import HttpException
 
 
-def test_default_headers(client):
-    headers = client.build_headers()
+def test_default_headers(offline_client):
+    headers = offline_client.build_headers()
     assert headers['Accept'] == 'application/json'
     assert headers['Content-Type'] == 'application/json'
     assert set(headers.keys()) == {'accept', 'user-agent', 'content-type'}
 
 
-def test_get_additional_headers(client):
-    headers = client.build_headers({'foo': 'bar'})
+def test_get_additional_headers(offline_client):
+    headers = offline_client.build_headers({'foo': 'bar'})
     assert headers['foo'] == 'bar'
 
 
-def test_override_headers(client):
-    headers = client.build_headers({'Accept': 'bar'})
+def test_override_headers(offline_client):
+    headers = offline_client.build_headers({'Accept': 'bar'})
     assert headers['Accept'] == 'bar'
     assert headers['accept'] == 'bar'
 
 
-def test_default_payload(client):
-    payload = client.build_payload()
+def test_default_payload(offline_client):
+    payload = offline_client.build_payload()
     assert payload['api_token'] == 'fake-key'
 
 
-def test_build_payload(client):
+def test_build_payload(offline_client):
     data = {'foo': 'bar'}
-    payload = client.build_payload(data)
+    payload = offline_client.build_payload(data)
     assert payload['foo'] == 'bar'
 
 
@@ -43,33 +43,33 @@ def test_base_url_validation():
 
 
 def test_base_url_from_key():
-    client = core.ApiClient(api_token='abc/example.com')
-    assert client.base_url == "https://example.com.fakturownia.pl/"
+    offline_client = core.ApiClient(api_token='abc/example.com')
+    assert offline_client.base_url == "https://example.com.fakturownia.pl/"
 
 
-def test_error_message_collection(client, mocker):
+def test_error_message_collection(offline_client, mocker):
     factory = mocker.patch('fakturownia.core.ApiClient.request_factory')
     response = MagicMock()
     response.raise_for_status.side_effect = HTTPError('foo')
     response.json.return_value = {"code": "error", "message": 'bad things'}
     factory.return_value = response
     with pytest.raises(HttpException) as ex:
-        client.request(None, 'api')
+        offline_client.request(None, 'api')
     assert """foo - bad things""" == str(ex.value)
 
 
-def test_error_exception_chaining(client, mocker):
+def test_error_exception_chaining(offline_client, mocker):
     factory = mocker.patch('fakturownia.core.ApiClient.request_factory')
     response = MagicMock()
     response.raise_for_status.side_effect = HTTPError('foo')
     response.json.return_value = {"foo": "bar"}
     factory.return_value = response
     with pytest.raises(HttpException) as ex:
-        client.request(None, 'api')
+        offline_client.request(None, 'api')
     assert """foo""" == str(ex.value)
 
 
-def test_get(client, mocker):
+def test_get(offline_client, mocker):
     request = mocker.patch('fakturownia.core.ApiClient.request')
-    client.get('foo')
+    offline_client.get('foo')
     request.assert_called_with('GET', 'foo', headers=None, params={'api_token': 'fake-key'})

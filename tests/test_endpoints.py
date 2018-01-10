@@ -20,8 +20,8 @@ INVOICE_CREATE = test_data.INVOICE_CREATE
 
 
 @pytest.fixture(params=["invoices", "clients"])
-def endpoint(request, client):
-    return getattr(client, request.param)
+def endpoint(request, offline_client):
+    return getattr(offline_client, request.param)
 
 
 @pytest.fixture
@@ -41,8 +41,8 @@ def test_create_invoice(endpoint, mocker):
     INVOICE_CREATE,
     factories.InvoiceFactory().get_raw_data(),
 ])
-def test_create_refresh_send_invoice_sandbox(sandbox_client, data):
-    invoice = sandbox_client.invoices.create(**data)
+def test_create_refresh_send_invoice_sandbox(api_client, data):
+    invoice = api_client.invoices.create(**data)
     assert invoice
     invoice.get()
     log.debug("id: %s", invoice.id)
@@ -52,8 +52,8 @@ def test_create_refresh_send_invoice_sandbox(sandbox_client, data):
 
 
 @pytest.mark.parametrize("buyer_email", ['fakturownia@niepodam.pl', os.environ.get('FAKTUROWNIA_SANDBOX_EMAIL', 'dummy@niepodam.pl')])
-def test_send_invoice(sandbox_client, buyer_email):
-    invoice = factories.InvoiceFactory(client=sandbox_client, buyer_email=buyer_email)
+def test_send_invoice(api_client, buyer_email):
+    invoice = factories.InvoiceFactory(client=api_client, buyer_email=buyer_email)
     invoice.post()
     invoice.send_by_email()
 
@@ -64,8 +64,8 @@ class ClientTests(object):
         CLIENT_CREATE,
         factories.ClientFactory().get_raw_data(),
     ])
-    def test_create_refresh_client_sandbox(self, sandbox_client, data):
-        item = sandbox_client.clients.create(**data)
+    def test_create_refresh_client_sandbox(self, api_client, data):
+        item = api_client.clients.create(**data)
         assert item
         item.get()
         log.debug("id: %s", item.id)
@@ -86,18 +86,18 @@ class ClientTests(object):
         CLIENT_CREATE,
         factories.ClientFactory().get_raw_data(),
     ])
-    def test_client_create_invoice_sandbox(self, sandbox_client, data, existing_product_id):
-        client = sandbox_client.clients.create(**data)
+    def test_client_create_invoice_sandbox(self, api_client, data, existing_product_id):
+        client = api_client.clients.create(**data)
         invoice = client.create_invoice(positions=[{'product_id': existing_product_id, 'quantity': 100}])
         invoice.get()
         log.debug("id: %s", client.id)
         assert invoice.id
         assert invoice.payment_url
 
-    def test_get_client(self, sandbox_client):
+    def test_get_client(self, api_client):
         with pytest.raises(HttpException, match='404 Client Error: Not Found for url') as ex:
             # noinspection PyStatementEffect
-            sandbox_client.clients[123]
+            api_client.clients[123]
         assert ex.value.status_code == 404
 
 
@@ -132,29 +132,29 @@ class InvoiceTests(object):
         with pytest.raises(AssertionError, match='Cannot send invoice without id'):
             invoice.send_by_email()
 
-    def test_mark_paid(self, sandbox_client):
-        invoice = factories.InvoiceFactory(client=sandbox_client)
+    def test_mark_paid(self, api_client):
+        invoice = factories.InvoiceFactory(client=api_client)
         invoice.post()
         assert invoice.status == 'issued'
         invoice.mark_paid()
         assert invoice.status == 'paid'
 
-    def test_delete(self, sandbox_client):
-        invoice = factories.InvoiceFactory(client=sandbox_client)
+    def test_delete(self, api_client):
+        invoice = factories.InvoiceFactory(client=api_client)
         invoice.post()
         assert invoice.status == 'issued'
         invoice.delete()
         assert invoice.id is not None
         with pytest.raises(HttpException, match='404 Client Error: Not Found for url'):
-            sandbox_client.invoices[invoice.id]
+            api_client.invoices[invoice.id]
 
 
 # noinspection PyMethodMayBeStatic
 class BaseModelTests(object):
-    def test_get(self, client, mocker):
+    def test_get(self, offline_client, mocker):
         client_get = mocker.patch('fakturownia.core.ApiClient.get')
         client_get.return_value = {'foo': 'bar'}
-        item = base.BaseModel(client, _endpoint='api')
+        item = base.BaseModel(offline_client, _endpoint='api')
         item.get()
         assert client_get.called
         assert item.foo == 'bar'

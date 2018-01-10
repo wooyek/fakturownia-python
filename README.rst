@@ -66,8 +66,8 @@ Play with `fakturownia APIs`_ in python interpreter::
     >>> import os
     >>> os.environ.get('FAKTUROWNIA_API_TOKEN', 'Missing key')
     '...'
-    >>> from fakturownia import get_default_client
-    >>> api = get_default_client()
+    >>> from fakturownia import get_api_client
+    >>> api = get_api_client()
     >>> invoice = api.invoices.create(
     ...     seller_name='Kabaret Starszych Panów',
     ...     buyer_name='Odrażający drab',
@@ -120,10 +120,6 @@ This library is not yet complete i does what was needed by up to date contributo
 You can implement new api endpoints and write test for them, it's actually straightforward and new classes are will be simple,
 but test are need some effort. We are lazy test writers and because we don't want to compromise coverage so we
 postponed new apis until someone would want to write test.
-
-Another tricky thing is mocking api backend, this it would be nice to have 100% coverage without calling an external service.
-Integrations tests need to stay to verify that this library actually works with the backend but running test without networking
-lags would speed up local development.
 
 For more If want to help please refer to the
 `contributing section <https://fakturownia.readthedocs.io/en/latest/contributing.html>`_ in the docs

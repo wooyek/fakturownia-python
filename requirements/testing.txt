@@ -7,6 +7,7 @@ pytest-html
 pytest-sugar
 pytest-cov
 pytest-mock
+pytest-lazy-fixture
 factory-boy
 psycopg2
 pathlib ; python_version < '3.3'

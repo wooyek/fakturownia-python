@@ -2,7 +2,7 @@
 """Top-level package for Fakturownia."""
 from __future__ import absolute_import
 
-from .core import get_default_client  # noqa F401
+from .core import get_api_client  # noqa F401
 from .endpoints import Client, Invoice  # noqa F401
 
 __author__ = """Janusz Skonieczny"""

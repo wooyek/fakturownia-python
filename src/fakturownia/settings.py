@@ -42,4 +42,6 @@ def get_env_from_file(path):
 def get_key_from_file(env_file=None):
     """This is a utili"""
     env_file = env_file or (Path(__file__).parents[2] / 'secrets.env')
+    if not env_file.exists():
+        return None
     return get_env_from_file(env_file).get('FAKTUROWNIA_API_TOKEN', None)

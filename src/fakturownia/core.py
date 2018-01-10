@@ -24,8 +24,8 @@ class ApiClient(object):
     >>> import os
     >>> os.environ.get('FAKTUROWNIA_API_TOKEN', 'Missing key')  # doctest: +ELLIPSIS
     '...'
-    >>> from fakturownia import get_default_client
-    >>> api = get_default_client()
+    >>> from fakturownia import get_api_client
+    >>> api = get_api_client()
     >>> invoice = api.invoices.create(
     ...     seller_name='Kabaret Starszych Panów',
     ...     buyer_name='Odrażający drab',
@@ -152,7 +152,7 @@ class ApiClient(object):
             raise six.reraise(HttpException, HttpException(ex, response), sys.exc_info()[2])
 
 
-def get_default_client():
+def get_api_client():
     """
     Factory function for Fakturownia API client with configuration options
     taken from environment
