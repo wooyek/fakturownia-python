@@ -114,7 +114,7 @@ def secrets():
 
 @pytest.fixture
 def sandbox_client(request, secrets):
-    sandbox_enabled = secrets.get('FAKTUROWNIA_SANDBOX_ENABLED', None)
+    sandbox_enabled = secrets.get('FAKTUROWNIA_SANDBOX_ENABLED', None) or os.environ.get('FAKTUROWNIA_SANDBOX_ENABLED', None)
     sandbox_enabled = envparse.Env.cast(sandbox_enabled, bool)
     if not sandbox_enabled:
         pytest.skip('Sandbox calls are disabled')
