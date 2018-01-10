@@ -6,7 +6,7 @@ Python client library for the Fakturownia API
 
 
 .. image:: https://img.shields.io/pypi/v/fakturownia-python.svg
-        :target: https://pypi.python.org/pypi/fakturownia-python
+        :target: https://pypi.python.org/pypi/fakturownia
 
 .. image:: https://img.shields.io/travis/wooyek/fakturownia-python.svg
         :target: https://travis-ci.org/wooyek/fakturownia-python
