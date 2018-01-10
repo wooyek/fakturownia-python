@@ -118,9 +118,11 @@ bump: ## increment version number
 upgrade: ## upgrade frozen requirements to the latest version
 	pipenv install -r requirements/production.txt
 	pipenv install --dev -r requirements/development.txt
-	pipenv lock --requirements > requirements.txt
-	sort requirements.txt -o requirements.txt
-	git add Pipfile Pipfile.lock requirements.txt
+	pipenv lock --requirements > requirements/lock/production.txt
+	pipenv lock --requirements --dev > requirements/lock/development.txt
+	sort requirements/lock/production.txt -o requirements/lock/production.txt
+	sort requirements/lock/development.txt -o requirements/lock/development.txt
+	git add Pipfile Pipfile.lock requirements/lock/*.txt
 	git commit -m "Requirements upgrade"
 
 release: upgrade sync lint tox bump dist ## build new package version release and sync repo

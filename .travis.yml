@@ -6,6 +6,9 @@ python:
     - "3.4"
     - "2.7"
 
+env:
+    - REQUIREMENTS=latest
+    - REQUIREMENTS=frozen
 
 matrix:
     fast_finish: true
@@ -60,7 +63,7 @@ jobs:
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
-  - codecov -e TOXENV
+  - codecov -e TOXENV,REQUIREMENTS
   - coveralls
 
 notifications:
