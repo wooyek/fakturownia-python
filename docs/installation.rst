@@ -12,7 +12,7 @@ To install Fakturownia, run this command in your terminal:
 
 .. code-block:: console
 
-    $ pip install fakturownia-python
+    $ pip install fakturownia
 
 This is the preferred method to install Fakturownia, as it will always install the most recent stable release.
 

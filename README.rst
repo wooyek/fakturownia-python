@@ -5,13 +5,13 @@ Fakturownia
 Python client library for the Fakturownia API
 
 
-.. image:: https://img.shields.io/pypi/v/fakturownia-python.svg
+.. image:: https://img.shields.io/pypi/v/fakturownia.svg
         :target: https://pypi.python.org/pypi/fakturownia
 
 .. image:: https://img.shields.io/travis/wooyek/fakturownia-python.svg
         :target: https://travis-ci.org/wooyek/fakturownia-python
 
-.. image:: https://readthedocs.org/projects/fakturownia-python/badge/?version=latest
+.. image:: https://readthedocs.org/projects/fakturownia/badge/?version=latest
         :target: https://fakturownia.readthedocs.io/en/latest/?badge=latest
         :alt: Documentation Status
 .. image:: https://coveralls.io/repos/github/wooyek/fakturownia-python/badge.svg?branch=develop
@@ -59,7 +59,7 @@ Quickstart
 
 Install Fakturownia
 
-    pip install fakturownia-python
+    pip install fakturownia
     python
 
 
