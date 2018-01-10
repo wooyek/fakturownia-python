@@ -85,18 +85,18 @@ This shows payment_url but only if you have payments enabled::
 
     >>> invoice.get()
     <fakturownia.endpoints.Invoice object at 0x...>
-    >>> invoice.payment_url
+    >>> invoice.payment_url  # doctest: +SKIP
     '...'
 
 We can mark this invoice as paid::
 
     >>> invoice.mark_paid()
-    <fakturownia.endpoints.Invoice object at 0x...>
+    <fakturownia.endpoints.Invoice object at 0x…>
 
 You can chain your calls::
 
     >>> invoice.put(buyer_email='kominek@niepodam.pl').send_by_email()
-    <fakturownia.endpoints.Invoice object at 0x...>
+    <fakturownia.endpoints.Invoice object at 0x…>
 
 Running Tests
 -------------

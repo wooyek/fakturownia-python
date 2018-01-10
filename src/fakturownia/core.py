@@ -22,7 +22,7 @@ class ApiClient(object):
     But first make sure you have set  `FAKTUROWNIA_API_TOKEN` environment variable.
 
     >>> import os
-    >>> os.environ.get('FAKTUROWNIA_API_TOKEN', 'Missing key')  # doctest: +ELLIPSIS
+    >>> os.environ.get('FAKTUROWNIA_API_TOKEN', 'Missing key')
     '...'
     >>> from fakturownia import get_api_client
     >>> api = get_api_client()
@@ -41,19 +41,19 @@ class ApiClient(object):
 
     This shows payment_url but only if you have payments enabled.
 
-    >>> invoice.get() # doctest: +ELLIPSIS
+    >>> invoice.get()
     <fakturownia.endpoints.Invoice object at 0x...>
-    >>> invoice.payment_url # doctest: +ELLIPSIS
+    >>> invoice.payment_url # doctest: +SKIP
     '...'
 
     We can mark this invoice as paid.
 
-    >>> invoice.mark_paid() # doctest: +ELLIPSIS
+    >>> invoice.mark_paid()
     <fakturownia.endpoints.Invoice object at 0x...>
 
     You can chain your calls
 
-    >>> invoice.put(buyer_email='kominek@niepodam.pl').send_by_email() # doctest: +ELLIPSIS
+    >>> invoice.put(buyer_email='kominek@niepodam.pl').send_by_email()
     <fakturownia.endpoints.Invoice object at 0x...>
 
     """

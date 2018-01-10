@@ -27,6 +27,7 @@ logging.getLogger('environ').setLevel(logging.INFO)
 log = logging.getLogger(__name__)
 fake = Faker()
 
+# doctest.ELLIPSIS_MARKER = '…'
 
 class MockedApiClient(ApiClient):
 
@@ -42,7 +43,7 @@ class MockedApiClient(ApiClient):
         kind = endpoint.replace('.json', '')[:-1]
         data = payload[kind].copy()
         if 'id' not in data or data['id'] is None:
-            data['id'] = self._ids.__next__()
+            data['id'] = next(self._ids)
         self._storage.setdefault(kind, {})[data['id']] = data
         if kind == 'invoice':
             data['payment_url'] = fake.url()
