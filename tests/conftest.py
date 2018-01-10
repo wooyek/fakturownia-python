@@ -109,8 +109,7 @@ def offline_client():
 def secrets():
     env_file = Path(__file__).parents[1] / 'secrets.env'
     if not env_file.exists():
-        pytest.skip('Requires an environment file with secret settings: {}'.format(env_file))
-
+        return dict(((k, v) for k, v in os.environ.items() if k.startswith('FAKTUROWNIA')))
     return get_env_from_file(env_file)
 
 
