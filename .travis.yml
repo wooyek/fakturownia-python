@@ -15,6 +15,7 @@ matrix:
 
     allow_failures:
       - python: "2.7"
+      - python: "3.4"
 
 before_install:
   - python --version
