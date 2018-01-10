@@ -23,6 +23,18 @@ endef
 export PRINT_HELP_PYSCRIPT
 BROWSER := python -c "$$BROWSER_PYSCRIPT"
 
+define DETOXME_PYSCRIPT
+import sys
+if __name__ == "__main__":
+    envs = [env.strip() for env in sys.stdin.readlines()]
+    print(
+        "detox -e " + ",".join(env for env in envs[:-1]) + "; "
+        "tox -e " + envs[-1]
+    )
+endef
+export DETOXME_PYSCRIPT
+DETOXME := python -c "$$DETOXME_PYSCRIPT"
+
 help:
 	@python -c "$$PRINT_HELP_PYSCRIPT" < $(MAKEFILE_LIST)
 
@@ -65,7 +77,8 @@ tox: ## run tests on every Python version with tox
 	tox --skip-missing-interpreters --recreate
 
 detox: ## run tests on every Python version with tox
-	detox --skip-missing-interpreters --recreate
+	#detox --skip-missing-interpreters --recreate
+	tox -l | $(DETOXME) | sh
 
 coverage: ## check code coverage quickly with the default Python
 	coverage run --source src --parallel-mode setup.py test

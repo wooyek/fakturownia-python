@@ -27,6 +27,7 @@ logging.getLogger('environ').setLevel(logging.INFO)
 log = logging.getLogger(__name__)
 fake = Faker()
 
+
 # doctest.ELLIPSIS_MARKER = '…'
 
 class MockedApiClient(ApiClient):

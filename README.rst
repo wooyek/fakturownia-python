@@ -41,6 +41,8 @@ Python client library for the Fakturownia API
 * Free software: MIT license
 * Documentation: https://fakturownia.readthedocs.io
 
+.. contents:: Table of Contents
+
 Features
 --------
 
