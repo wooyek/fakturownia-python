@@ -51,6 +51,10 @@ def api_token():
 
 @pytest.fixture
 def no_api_token_env():
+    if 'FAKTUROWNIA_API_TOKEN' not in os.environ:
+        yield
+        return
+
     initial_value, clear = None, True
     if 'FAKTUROWNIA_API_TOKEN' in os.environ:
         initial_value = os.environ.get('FAKTUROWNIA_API_TOKEN', None)
