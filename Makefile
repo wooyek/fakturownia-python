@@ -132,7 +132,7 @@ upgrade: ## upgrade frozen requirements to the latest version
 	pipenv install -r requirements/production.txt
 	pipenv install --dev -r requirements/development.txt
 	pipenv lock --requirements > requirements/lock/production.txt
-	pipenv lock --requirements --dev > requirements/lock/development.txt
+	pipenv lock --requirements --dev | grep -v '/fakturownia-python' -- > requirements/lock/development.txt
 	sort requirements/lock/production.txt -o requirements/lock/production.txt
 	sort requirements/lock/development.txt -o requirements/lock/development.txt
 	git add Pipfile Pipfile.lock requirements/lock/*.txt
