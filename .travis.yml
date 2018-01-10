@@ -35,7 +35,8 @@ install:
   - git --version
 
 script:
-  - tox --skip-missing-interpreters
+  - tox -v
+#  - tox --skip-missing-interpreters
 
 jobs:
   include:
