@@ -138,7 +138,7 @@ upgrade: ## upgrade frozen requirements to the latest version
 	git add Pipfile Pipfile.lock requirements/lock/*.txt
 	git commit -m "Requirements upgrade"
 
-release: upgrade sync lint tox bump dist ## build new package version release and sync repo
+release: lint upgrade detox sync bump dist ## build new package version release and sync repo
 	git checkout develop
 	git merge master --verbose
 	git push origin develop --verbose
