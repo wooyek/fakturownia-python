@@ -93,3 +93,4 @@ fabric.properties
 .pyvenv
 .cache
 secrets.env
+.python-version
