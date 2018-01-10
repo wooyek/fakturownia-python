@@ -73,3 +73,15 @@ def test_get(offline_client, mocker):
     request = mocker.patch('fakturownia.core.ApiClient.request')
     offline_client.get('foo')
     request.assert_called_with('GET', 'foo', headers=None, params={'api_token': 'fake-key'})
+
+
+def test_put(offline_client, mocker):
+    request = mocker.patch('fakturownia.core.ApiClient.request')
+    offline_client.put('foo')
+    request.assert_called_with('PUT', 'foo', headers=None, payload='{"api_token": "fake-key"}')
+
+
+def test_delete(offline_client, mocker):
+    request = mocker.patch('fakturownia.core.ApiClient.request')
+    offline_client.delete('foo')
+    request.assert_called_with('DELETE', 'foo', headers=None, params={'api_token': 'fake-key'})

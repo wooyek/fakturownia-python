@@ -1,11 +1,18 @@
 # coding=utf-8
+"""
+Utilities for settings loading
+
+Since envparse modifies os.environ on while loading .env files we need and
+alternate solution that wont't touch os.environ by default.
+"""
+
 import logging
 import re
 import shlex
 
 import six
 
-if six.PY3:
+if six.PY3:  # pragma: no cover
     from pathlib import Path
 else:
     from pathlib2 import Path
@@ -35,13 +42,18 @@ def parse_env(content):  # pragma: no cover
 
 def get_env_from_file(path):
     if not isinstance(path, Path):  # pragma: no cover
-        path = Path(path)
+        path = Path(str(path))
     return dict(parse_env(path.read_text()))
 
 
 def get_key_from_file(env_file=None):
-    """This is a utili"""
-    env_file = env_file or (Path(__file__).parents[2] / 'secrets.env')
+    """This is a utility to ease testing with secrets.env file present or not"""
+    env_file = env_file or get_default_env_file()
     if not env_file.exists():
         return None
     return get_env_from_file(env_file).get('FAKTUROWNIA_API_TOKEN', None)
+
+
+def get_default_env_file():
+    """Returns secrets.env from project root, should not be used outside testing"""
+    return Path(__file__).parents[2] / 'secrets.env'
