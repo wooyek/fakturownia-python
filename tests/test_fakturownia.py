@@ -49,6 +49,20 @@ def api_token():
         os.environ['FAKTUROWNIA_API_TOKEN'] = initial_value
 
 
+@pytest.fixture
+def no_api_token_env():
+    initial_value, clear = None, True
+    if 'FAKTUROWNIA_API_TOKEN' in os.environ:
+        initial_value = os.environ.get('FAKTUROWNIA_API_TOKEN', None)
+        clear = False
+    del os.environ['FAKTUROWNIA_API_TOKEN']
+    yield
+    if clear:
+        del os.environ['FAKTUROWNIA_API_TOKEN']
+    else:
+        os.environ['FAKTUROWNIA_API_TOKEN'] = initial_value
+
+
 def test_client_factory(api_token):
     api_client = get_api_client()
     assert api_client is not None
@@ -57,7 +71,7 @@ def test_client_factory(api_token):
     assert api_client.base_url
 
 
-def test_client_factory_no_environment(mocker):
+def test_client_factory_no_environment(mocker, no_api_token_env):
     get_env_from_file = mocker.patch('fakturownia.settings.get_env_from_file')
     get_env_from_file.return_value = {}
     with pytest.raises(FakturowniaException, match='Please set FAKTUROWNIA_API_TOKEN environment variable'):
