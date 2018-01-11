@@ -1,20 +1,25 @@
 # coding=utf-8
+import six
+
+from fakturownia import core
 
 
 class BaseEndpoint(object):
-    def __init__(self, client):
-        self.client = client
+    def __init__(self, api_client):
+        self.api_client = api_client
 
     def create(self, **kwargs):
-        return self.model(self.client, **kwargs).post()
+        return self.model(self.api_client, **kwargs).post()
 
     def __getitem__(self, key):
-        return self.model(client=self.client, id=key).get()
+        return self.model(api_client=self.api_client, id=key).get()
 
 
 class BaseModel(object):
-    def __init__(self, client, **kwargs):
-        super(BaseModel, self).__setattr__('_client', kwargs.pop('client', client))
+    def __init__(self, api_client, **kwargs):
+        if isinstance(api_client, six.string_types):
+            api_client = core.ApiClient(api_client)
+        super(BaseModel, self).__setattr__('_api_client', kwargs.pop('api_client', api_client))
         super(BaseModel, self).__setattr__('_data', {'id': None})
         for k, v in kwargs.items():
             setattr(self, k, v)
@@ -24,13 +29,13 @@ class BaseModel(object):
 
     def post(self, **kwargs):
         data = self.prepare_post_data(**kwargs)
-        response = self._client.post(self.get_endpoint(), data)
+        response = self._api_client.post(self.get_endpoint(), data)
         self._update_data(response)
         return self
 
     def put(self, **kwargs):
         data = self.prepare_post_data(**kwargs)
-        response = self._client.put(self.get_endpoint(), data)
+        response = self._api_client.put(self.get_endpoint(), data)
         self._update_data(response)
         return self
 
@@ -41,12 +46,12 @@ class BaseModel(object):
         return {self._data_wrap: data}
 
     def get(self):
-        response = self._client.get(self.get_endpoint())
+        response = self._api_client.get(self.get_endpoint())
         self._update_data(response)
         return self
 
     def delete(self):
-        self._client.delete(self.get_endpoint())
+        self._api_client.delete(self.get_endpoint())
         return self
 
     def get_endpoint(self, extra=''):

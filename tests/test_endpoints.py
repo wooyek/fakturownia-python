@@ -31,6 +31,7 @@ def existing_product_id(secrets):
     return secrets['FAKTUROWNIA_EXISTING_PRODUCT_ID']
 
 
+# noinspection PyShadowingNames
 def test_create_invoice(endpoint, mocker):
     request = mocker.patch('requests.request')
     request.return_value = MagicMock()
@@ -55,7 +56,7 @@ def test_create_refresh_send_invoice_sandbox(api_client, data):
 
 @pytest.mark.parametrize("buyer_email", ['fakturownia@niepodam.pl', os.environ.get('FAKTUROWNIA_SANDBOX_EMAIL', 'dummy@niepodam.pl')])
 def test_send_invoice(api_client, buyer_email):
-    invoice = factories.InvoiceFactory(client=api_client, buyer_email=buyer_email)
+    invoice = factories.InvoiceFactory(api_client=api_client, buyer_email=buyer_email)
     invoice.post()
     invoice.send_by_email()
 
@@ -84,6 +85,7 @@ class ClientTests(object):
         with pytest.raises(AssertionError):
             client.create_invoice()
 
+    # noinspection PyShadowingNames
     @pytest.mark.parametrize("data", [
         CLIENT_CREATE,
         factories.ClientFactory().get_raw_data(),
@@ -135,20 +137,87 @@ class InvoiceTests(object):
             invoice.send_by_email()
 
     def test_mark_paid(self, api_client):
-        invoice = factories.InvoiceFactory(client=api_client)
+        invoice = factories.InvoiceFactory(api_client=api_client)
         invoice.post()
         assert invoice.status == 'issued'
         invoice.mark_paid()
         assert invoice.status == 'paid'
 
     def test_delete(self, api_client):
-        invoice = factories.InvoiceFactory(client=api_client)
+        invoice = factories.InvoiceFactory(api_client=api_client)
         invoice.post()
         assert invoice.status == 'issued'
         invoice.delete()
         assert invoice.id is not None
         with pytest.raises(HttpException, match='404 Client Error: Not Found for url'):
+            # noinspection PyStatementEffect
             api_client.invoices[invoice.id]
+
+    @pytest.mark.parametrize(
+        "total_price_gross, total_price_net, total_price_tax, quantity, "
+        "price_gross, price_net, price_tax, discount, discount_kind, final_price_gross, final_price_net, final_price_tax, tax",
+        [
+            ('100.0', '100.0', '0.0',  1, '100.0', '100.0', '0.0',  '5.0',   'amount',        '95.0',   '95.0',   '0.0',   '0.0'),  # noqa E241
+            ('100.0', '100.0', '0.0',  1, '100.0', '100.0', '0.0',  '5.1',   'amount',        '94.9',   '94.9',   '0.0',   '0.0'),  # noqa E241
+            ('100.0', '100.0', '0.0',  1, '100.0', '100.0', '0.0',  '33.33', 'amount',        '66.67',  '66.67',  '0.0',   '0.0'),  # noqa E241
+            ('100.0', '100.0', '0.0',  1, '100.0', '100.0', '0.0',  '33.33', 'percent_unit',  '66.67',  '66.67',  '0.0',   '0.0'),  # noqa E241
+            ('100.0', '100.0', '0.0',  1, '100.0', '100.0', '0.0',  '33.33', 'percent_total', '66.67',  '66.67',  '0.0',   '0.0'),  # noqa E241
+            ('300.0', '300.0', '0.0',  3, '100.0', '100.0', '0.0',  '5.0',   'amount',        '295.0',  '295.0',  '0.0',   '0.0'),  # noqa E241
+            ('300.0', '300.0', '0.0',  3, '100.0', '100.0', '0.0',  '5.1',   'amount',        '294.9',  '294.9',  '0.0',   '0.0'),  # noqa E241
+            ('300.0', '300.0', '0.0',  3, '100.0', '100.0', '0.0',  '33.33', 'amount',        '266.67', '266.67', '0.0',   '0.0'),  # noqa E241
+            ('300.0', '300.0', '0.0',  3, '100.0', '100.0', '0.0',  '33.33', 'percent_unit',  '200.01', '200.01', '0.0',   '0.0'),  # noqa E241
+            ('300.0', '300.0', '0.0',  3, '100.0', '100.0', '0.0',  '33.33', 'percent_total', '200.01', '200.01', '0.0',   '0.0'),  # noqa E241
+            ('100.0', '81.3',  '18.7', 1, '100.0', '81.3',  '18.7', '5.0',   'amount',        '95.0',   '77.24',  '17.76', '23.0'),  # noqa E241
+            ('123.0', '100.0', '23.0', 1, '123.0', '100.0', '23.0', '33.33', 'amount',        '89.67',  '72.9',   '16.77', '23.0'),  # noqa E241
+            ('123.0', '100.0', '23.0', 1, '123.0', '100.0', '23.0', '33.33', 'percent_unit',  '82.0',   '66.67',  '15.33', '23.0'),  # noqa E241
+            ('123.0', '100.0', '23.0', 1, '123.0', '100.0', '23.0', '33.33', 'percent_total', '82.0',   '66.67',  '15.33', '23.0'),  # noqa E241
+            ('369.0', '300.0', '69.0', 3, '123.0', '100.0', '23.0', '33.33', 'percent_unit',  '246.01', '200.01', '46.0',  '23.0'),  # noqa E241
+            ('369.0', '300.0', '69.0', 3, '123.0', '100.0', '23.0', '33.33', 'percent_total', '246.01', '200.01', '46.0',  '23.0'),  # noqa E241
+        ]
+    )
+    def test_discount_amount(self, sandbox_api,
+                             total_price_gross, total_price_net, total_price_tax, quantity,
+                             price_gross, price_net, price_tax, discount, discount_kind,
+                             final_price_gross, final_price_net, final_price_tax, tax):
+        """This more an expectation validation test an actual unit test"""
+
+        position = factories.InvoicePosition(
+            total_price_gross=total_price_gross,
+            tax=tax,
+            quantity=quantity,
+            discount=discount,
+            discount_percent=discount,
+        )
+        invoice = factories.InvoiceFactory(
+            api_client=sandbox_api,
+            show_discount=1,
+            discount_kind=discount_kind,
+            positions=[position]
+        )
+        invoice.post().get()
+        position = invoice.positions[0]
+
+        # Has discount
+        if discount_kind == 'amount':
+            assert discount == position['discount']
+        else:
+            assert discount == position['discount_percent']
+
+        # No discount shown in totals of position
+        assert total_price_gross == position['total_price_gross']
+        assert total_price_net == position['total_price_net']
+        assert total_price_tax == position['total_price_tax']
+
+        # Quantity quantity * price == total_price
+        assert price_gross == position['price_gross']
+        assert price_net == position['price_net']
+        assert price_tax == position['price_tax']
+        assert tax == position['tax']
+
+        # With discount
+        assert final_price_gross == invoice.price_gross
+        assert final_price_net == invoice.price_net
+        assert final_price_tax == invoice.price_tax
 
 
 # noinspection PyMethodMayBeStatic
@@ -172,3 +241,9 @@ class BaseModelTests(object):
         with pytest.raises(AssertionError, match='Existing id does not match update data 333!=777'):
             # noinspection PyProtectedMember
             item._update_data({'id': 777})
+
+    # noinspection PyProtectedMember
+    def test_api_client_by_string_key(self):
+        item = base.BaseModel('adios/pomidory')
+        assert item._api_client.base_url == 'https://pomidory.fakturownia.pl/'
+        assert item._api_client.api_token == 'adios/pomidory'

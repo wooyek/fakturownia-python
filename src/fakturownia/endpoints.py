@@ -3,6 +3,7 @@ from datetime import datetime
 
 import six
 
+from fakturownia import vat
 from fakturownia.base import BaseEndpoint, BaseModel
 
 
@@ -33,11 +34,32 @@ class Invoice(BaseModel):
     def send_by_email(self):
         assert self.id, 'Cannot send invoice without id'
         endpoint = self.get_endpoint('/send_by_email')
-        self._client.post(endpoint)
+        self._api_client.post(endpoint)
         return self
 
     def mark_paid(self):
         return self.put(status='paid')
+
+    def normalize_vat(self, default_rate=None):
+        """This is a common business logic that maybe helpful in handling EU to EU invoicing"""
+        eu_member_states = vat.eu_member_state_vat.keys()
+        default_rate = default_rate or vat.get_standard_vat_rate(self.seller_country)
+        if self.buyer_country not in eu_member_states:
+            # Outside EU
+            self.set_tax_on_positions(default_rate)
+        else:
+            if self.buyer_tax_no is not None:
+                # EU company, country
+                self.set_tax_on_positions(0)
+            else:
+                # EU citizen, member state VAT rate applies
+                vat_rate = vat.get_standard_vat_rate(self.buyer_country)
+                self.set_tax_on_positions(vat_rate)
+        return self
+
+    def set_tax_on_positions(self, rate):
+        for position in self.positions:
+            position['tax'] = rate
 
 
 class Invoices(BaseEndpoint):
@@ -51,7 +73,7 @@ class Client(BaseModel):
     def create_invoice(self, **kwargs):
         assert self.id
         kwargs['client_id'] = self.id
-        return self._client.invoices.create(**kwargs)
+        return self._api_client.invoices.create(**kwargs)
 
 
 class Clients(BaseEndpoint):

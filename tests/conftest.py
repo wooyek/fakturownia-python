@@ -96,7 +96,7 @@ class MockedApiClient(ApiClient):
 
 
 @pytest.fixture
-def mocked_client():
+def mocked_api():
     return MockedApiClient()
 
 
@@ -114,7 +114,7 @@ def secrets():
 
 
 @pytest.fixture
-def sandbox_client(request, secrets):
+def sandbox_api(request, secrets):
     sandbox_enabled = secrets.get('FAKTUROWNIA_SANDBOX_ENABLED', None) or os.environ.get('FAKTUROWNIA_SANDBOX_ENABLED', None)
     sandbox_enabled = envparse.Env.cast(sandbox_enabled, bool)
     if not sandbox_enabled:
@@ -126,8 +126,8 @@ def sandbox_client(request, secrets):
 
 
 @pytest.fixture(params=[
-    lazy_fixture('mocked_client'),
-    lazy_fixture('sandbox_client')
+    lazy_fixture('mocked_api'),
+    lazy_fixture('sandbox_api')
 ])
 def api_client(request):
     return request.param

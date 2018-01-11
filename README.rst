@@ -37,9 +37,12 @@ Python client library for the Fakturownia API
 .. image:: https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg
         :target: https://saythanks.io/to/wooyek
 
+If you don't know it yet be sure to check it out:
 
-* Free software: MIT license
-* Documentation: https://fakturownia.readthedocs.io
+.. image:: //app.fakturownia.pl/polecam-fakturownie-niebieski.png
+    :target: http://fakturownia.pl
+        :alt: Polecam Fakturownia.pl - prosty program do fakturowania online
+
 
 .. contents:: Table of Contents
 
@@ -47,6 +50,7 @@ Features
 --------
 
 * ☑ Invoice CRUD plus `send_by_email` and 'mark_paid`
+* ☑ EU member states VAT rate helpers for B2C transactions
 * ☑ ApiClient CRUD
 * ☐ Payments CRUD
 * ☐ Products CRUD
@@ -62,7 +66,6 @@ Install Fakturownia
 
     pip install fakturownia
     python
-
 
 Play with `fakturownia APIs`_ in python interpreter::
 
@@ -100,6 +103,20 @@ You can chain your calls::
 
     >>> invoice.put(buyer_email='kominek@niepodam.pl').send_by_email()
     <fakturownia.endpoints.Invoice object at 0x...>
+
+You can play and test your scenarios wih factories::
+
+    pip install fakturownia[factories]
+    python
+
+Now you can do this::
+
+    >>> from fakturownia.factories import InvoiceFactory
+    >>> InvoiceFactory(api_client='<your api key here>', kind='proforma').post().get().payment_url # doctest: +SKIP
+    '...'
+
+Neat! :)
+
 
 Running Tests
 -------------
