@@ -48,6 +48,7 @@ Features
 
 * ☑ Invoice CRUD plus `send_by_email` and 'mark_paid`
 * ☑ ApiClient CRUD
+* ☐ Payments CRUD
 * ☐ Products CRUD
 * ☐ Warehouse documents CRUD
 * ☐ Accounts management
@@ -118,13 +119,13 @@ Please install `requirements/base.txt` and `requirements/development.txt` to set
 Help wanted
 -----------
 
-This library is not yet complete i does what was needed by up to date contributors but more can be done.
-You can implement new api endpoints and write test for them, it's actually straightforward and new classes are will be simple,
-but test are need some effort. We are lazy test writers and because we don't want to compromise coverage so we
+This library is not yet complete. It does what was needed by up to date contributors, but more can be done.
+You can implement new api endpoints and write test for them, it's actually straightforward and new classes will be simple,
+but tests need some effort. We are lazy test writers and because we don't want to compromise coverage so we
 postponed new apis until someone would want to write test.
 
-For more If want to help please refer to the
-`contributing section <https://fakturownia.readthedocs.io/en/latest/contributing.html>`_ in the docs
+If want to help please refer to the
+`contributing section <https://fakturownia.readthedocs.io/en/latest/contributing.html>`_ in the docs for more info.
 
 Credits
 -------
