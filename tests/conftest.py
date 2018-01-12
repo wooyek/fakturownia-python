@@ -1,5 +1,4 @@
 # coding=utf-8
-import doctest
 import json
 import logging
 import os
@@ -28,8 +27,6 @@ logging.getLogger('environ').setLevel(logging.INFO)
 log = logging.getLogger(__name__)
 fake = Faker()
 
-
-# doctest.ELLIPSIS_MARKER = '…'
 
 class MockedApiClient(ApiClient):
 

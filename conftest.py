@@ -12,7 +12,6 @@ class ExtendedOutputChecker(doctest.OutputChecker):
     """
 
     def check_output(self, want, got, optionflags):
-        from re import sub
         if optionflags & doctest.ELLIPSIS:
             want = want.replace("'...'", "...")
         return super(doctest.OutputChecker, self).check_output(want, got, optionflags)
