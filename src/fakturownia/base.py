@@ -72,7 +72,7 @@ class BaseModel(object):
 
     def __getattr__(self, key):
         if key not in self._data:
-            msg = '{} instance does not have {} key in data dictionary'
+            msg = '{} instance does not have {} key in data dictionary, you may have to call get to fetch full data dict.'
             raise AttributeError(msg.format(self.__class__.__name__, key))
         return self._data[key]
 

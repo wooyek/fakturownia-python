@@ -13,3 +13,8 @@ History
 
 * endpoints indexing
 * Robust testing with mocked and real interchangeable backeds .
+
+0.2.1 (2018-01-12)
+++++++++++++++++++
+
+* EU member states VAT rate helpers for B2C transactions

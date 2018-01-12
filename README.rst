@@ -83,15 +83,17 @@ Play with `fakturownia APIs`_ in python interpreter::
     ...         'total_price_gross': 7.33,
     ...     }],
     ... )
+    >>> invoice.view_url
+    '...'
 
 This instance is only partially updated as create returns only subset of
 data properties, to get all we need to update our instance.
 
-This shows payment_url but only if you have payments enabled::
+If you have payments enabled you can call get to fetch all data and check payment_url::
 
     >>> invoice.get()
     <fakturownia.endpoints.Invoice object at 0x...>
-    >>> invoice.payment_url  # doctest: +SKIP
+    >>> invoice.payment_url
     '...'
 
 We can mark this invoice as paid::
@@ -113,6 +115,17 @@ Now you can do this::
 
     >>> from fakturownia.factories import InvoiceFactory
     >>> InvoiceFactory(api_client='<your api key here>', kind='proforma').post().get().payment_url # doctest: +SKIP
+    '...'
+
+Also checkout VAT tax normalization based on
+`EU country specific VAT rates <https://ec.europa.eu/taxation_customs/business/vat/eu-country-specific-information-vat_en>`_::
+
+    >>> InvoiceFactory(
+    ...     api_client=api,
+    ...     seller_country='PL',
+    ...     buyer_country='DE',
+    ...     buyer_tax_no=None,
+    ... ).normalize_vat().post().view_url
     '...'
 
 Neat! :)
