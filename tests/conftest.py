@@ -132,15 +132,3 @@ def sandbox_api(request, secrets):
 ])
 def api_client(request):
     return request.param
-
-
-class ExtendedOutputChecker(doctest.OutputChecker):
-    def check_output(self, want, got, optionflags):
-        from re import sub
-        raise Exception()
-        if optionflags & doctest.ELLIPSIS:
-            want = sub(r"'\.\.\.'", '...', want)
-        return doctest.OutputChecker.check_output(self, want, got, optionflags)
-
-
-doctest.OutputChecker = ExtendedOutputChecker
