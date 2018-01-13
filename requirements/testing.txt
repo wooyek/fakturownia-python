@@ -8,6 +8,7 @@ pytest-sugar
 pytest-cov
 pytest-mock
 pytest-lazy-fixture
+pytest-doctest-ellipsis-markers
 factory-boy
 psycopg2
 pathlib ; python_version < '3.3'
