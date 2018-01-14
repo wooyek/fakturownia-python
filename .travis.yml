@@ -47,17 +47,17 @@ jobs:
           - tox --version
           - pwd
           - ls -la
+          # Smoke test make commands
           - make
           - make bump
           - make lint
           - make test
           - make tox
           - make detox
-          - make coverage
-          - make dist
+          - make coverage-report
           - make install
           - make docs
-          # Lint again after docs generation
+          # Lint again after docs generation to validate links and spelling
           - make lint
           - make clean
 
