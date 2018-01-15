@@ -23,11 +23,16 @@ def test_eu_normalize_vat(country, vat):
         assert vat == position['tax']
 
 
-def test_eu_normalize_vat_company():
+@pytest.mark.parametrize("intra_eu_vat_rate", [0, 'lorem', None])
+def test_eu_normalize_vat_company(intra_eu_vat_rate):
     invoice = factories.InvoiceFactory(seller_country='PL', buyer_country='DE')
-    invoice.normalize_vat(23)
+    if intra_eu_vat_rate:
+        invoice.normalize_vat(intra_eu_vat_rate=intra_eu_vat_rate)
+    else:
+        intra_eu_vat_rate = 'np'
+        invoice.normalize_vat()
     for position in invoice.positions:
-        assert 0 == position['tax']
+        assert intra_eu_vat_rate == position['tax']
 
 
 def test_normalize_vat_world():

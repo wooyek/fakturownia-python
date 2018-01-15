@@ -40,7 +40,7 @@ class Invoice(BaseModel):
     def mark_paid(self):
         return self.put(status='paid')
 
-    def normalize_vat(self, default_rate=None, internal_ue_vat_rate='np'):
+    def normalize_vat(self, default_rate=None, intra_eu_vat_rate='np'):
         """This is a common business logic that maybe helpful in handling EU to EU invoicing"""
         eu_member_states = vat.eu_member_state_vat.keys()
         default_rate = default_rate or vat.get_standard_vat_rate(self.seller_country)
@@ -50,7 +50,8 @@ class Invoice(BaseModel):
         else:
             if self.buyer_tax_no is not None:
                 # EU company, country
-                self.set_tax_on_positions(internal_ue_vat_rate)
+                self.set_tax_on_positions(intra_eu_vat_rate)
+                self.description = "VAT reverse charge"
             else:
                 # EU citizen, member state VAT rate applies
                 vat_rate = vat.get_standard_vat_rate(self.buyer_country)
