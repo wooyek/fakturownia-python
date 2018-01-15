@@ -41,7 +41,7 @@ If you don't know it yet be sure to check it out:
 
 .. image:: //app.fakturownia.pl/polecam-fakturownie-niebieski.png
     :target: http://fakturownia.pl
-        :alt: Polecam Fakturownia.pl - prosty program do fakturowania online
+    :alt: Polecam Fakturownia.pl - prosty program do fakturowania online
 
 
 .. contents:: Table of Contents
