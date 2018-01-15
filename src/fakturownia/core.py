@@ -58,7 +58,8 @@ class ApiClient(object):
 
     """
 
-    def __init__(self, api_token, base_url=None):
+    def __init__(self, api_token, base_url=None, request_timeout=10):
+        self.request_timeout = request_timeout
         self.api_token = api_token
         if base_url is not None:
             self.base_url = base_url
@@ -120,6 +121,7 @@ class ApiClient(object):
             headers=self.build_headers(headers),
             data=payload,
             params=params,
+            timeout=self.request_timeout,
         )
         log.debug("response: %s", resp)
         log.debug("response: %s", resp.text)
@@ -167,4 +169,7 @@ def get_api_client():
     if api_token is None:
         raise FakturowniaException('Please set FAKTUROWNIA_API_TOKEN environment variable')
     base_url = os.environ.get('FAKTUROWNIA_BASE_URL', None)
-    return ApiClient(api_token=api_token, base_url=base_url)
+    request_timeout = os.environ.get('FAKTUROWNIA_TIMEOUT', None)
+    if request_timeout:
+        request_timeout = float(request_timeout)
+    return ApiClient(api_token=api_token, base_url=base_url, request_timeout=request_timeout)

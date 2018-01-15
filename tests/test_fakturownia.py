@@ -80,3 +80,18 @@ def test_client_factory_no_environment(mocker, no_api_token_env):
     get_env_from_file.return_value = {}
     with pytest.raises(FakturowniaException, match='Please set FAKTUROWNIA_API_TOKEN environment variable'):
         get_api_client()
+
+
+def test_client_factory_timeout(mocker):
+    mocker.patch.dict('os.environ', {'FAKTUROWNIA_TIMEOUT': '0.1'})
+    api = get_api_client()
+    assert 0.1 == api.request_timeout
+
+
+def test_client_factory_default_timeout():
+    api = get_api_client()
+    assert None == api.request_timeout
+
+
+
+
