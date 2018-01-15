@@ -18,3 +18,4 @@ History
 ++++++++++++++++++
 
 * EU member states VAT rate helpers for B2C transactions
+* FAKTUROWNIA_TIMEOUT setting for request timeout

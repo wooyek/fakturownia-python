@@ -90,8 +90,4 @@ def test_client_factory_timeout(mocker):
 
 def test_client_factory_default_timeout():
     api = get_api_client()
-    assert None == api.request_timeout
-
-
-
-
+    assert api.request_timeout is None
