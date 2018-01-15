@@ -21,7 +21,7 @@ else:
 
 logging.basicConfig(format='%(asctime)s %(levelname)-7s %(thread)-5d %(filename)s:%(lineno)s | %(funcName)s | %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 logging.getLogger().setLevel(logging.DEBUG)
-# logging.disable(logging.NOTSET)
+logging.disable(logging.NOTSET)
 logging.getLogger('environ').setLevel(logging.INFO)
 
 log = logging.getLogger(__name__)

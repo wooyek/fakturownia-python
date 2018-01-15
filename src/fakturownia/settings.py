@@ -15,7 +15,7 @@ import six
 if six.PY3:  # pragma: no cover
     from pathlib import Path
 else:
-    from pathlib2 import Path
+    from pathlib2 import Path  # pragma: no cover
 
 log = logging.getLogger(__name__)
 

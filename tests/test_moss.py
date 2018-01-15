@@ -40,3 +40,16 @@ def test_normalize_vat_world():
 def test_eu_member_state_validation():
     with pytest.raises(ValueError, match='US not found in eu member state vat table'):
         vat.get_standard_vat_rate('us')
+
+
+def test_invalid_tax_no_is_not_restricted(sandbox_api):
+    i = factories.InvoiceFactory(
+        api_client=sandbox_api,
+        kind='proforma',
+        use_moss=True,
+        seller_country='PL',
+        buyer_country='DE',
+        buyer_tax_no='lorem',
+    )
+    i.normalize_vat().post()
+    logging.debug("i.view_url: %s", i.view_url)
