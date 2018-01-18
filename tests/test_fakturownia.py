@@ -8,6 +8,7 @@ import os
 import pytest
 
 import fakturownia
+from fakturownia import factories
 from fakturownia.core import get_api_client
 from fakturownia.exceptions import FakturowniaException
 
@@ -91,3 +92,13 @@ def test_client_factory_timeout(mocker):
 def test_client_factory_default_timeout():
     api = get_api_client()
     assert api.request_timeout is None
+
+
+def test_change_client_data_effect_on_history_invoices(sandbox_api):
+    invoice = factories.InvoiceFactory(api_client=sandbox_api).post().get()
+    client = sandbox_api.clients[invoice.client_id]
+    client.name = 'Kabaret Starszych Panów'
+    client.put()
+    assert invoice.buyer_name == sandbox_api.invoices[invoice.id].get().buyer_name
+
+

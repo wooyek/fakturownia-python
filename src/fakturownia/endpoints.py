@@ -76,6 +76,15 @@ class Client(BaseModel):
         kwargs['client_id'] = self.id
         return self._api_client.invoices.create(**kwargs)
 
+    def prepare_post_data(self, **kwargs):
+        payload = super(Client, self).prepare_post_data(**kwargs)
+        pop_data = ['balance']
+        data = payload[self._data_wrap]
+        for key in pop_data:
+            if key in data:
+                data.pop('balance')
+        return payload
+
 
 class Clients(BaseEndpoint):
     model = Client

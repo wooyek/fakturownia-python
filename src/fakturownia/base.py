@@ -29,13 +29,13 @@ class BaseModel(object):
 
     def post(self, **kwargs):
         data = self.prepare_post_data(**kwargs)
-        response = self._api_client.post(self.get_endpoint(), data)
+        response = self._api_client.post(self.get_endpoint(), data=data)
         self._update_data(response)
         return self
 
     def put(self, **kwargs):
         data = self.prepare_post_data(**kwargs)
-        response = self._api_client.put(self.get_endpoint(), data)
+        response = self._api_client.put(self.get_endpoint(), data=data)
         self._update_data(response)
         return self
 

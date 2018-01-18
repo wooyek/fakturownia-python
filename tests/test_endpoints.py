@@ -8,7 +8,7 @@ import six
 from mock import MagicMock
 
 from . import test_data
-from fakturownia import base, factories
+from fakturownia import base, factories, endpoints
 from fakturownia.exceptions import HttpException
 
 log = logging.getLogger(__name__)
@@ -22,6 +22,15 @@ INVOICE_CREATE = test_data.INVOICE_CREATE
 @pytest.fixture(params=["invoices", "clients"])
 def endpoint(request, offline_client):
     return getattr(offline_client, request.param)
+
+
+# noinspection PyUnresolvedReferences
+@pytest.fixture(params=[
+    test_data.CLIENT_GET,
+    factories.ClientFactory().get_raw_data(),
+])
+def client_raw_data(request):
+    return request.param
 
 
 @pytest.fixture
@@ -103,6 +112,15 @@ class ClientTests(object):
             # noinspection PyStatementEffect
             api_client.clients[123]
         assert ex.value.status_code == 404
+
+    # noinspection PyShadowingNames
+    def test_invalid_data(self, client_raw_data):
+        api = MagicMock()
+        api.return_value = {}
+        client = endpoints.Client(api, **client_raw_data)
+        client.put()
+        data = api.put.call_args[1]['data']
+        assert 'balance' not in data
 
 
 # noinspection PyMethodMayBeStatic
