@@ -265,3 +265,8 @@ class BaseModelTests(object):
         item = base.BaseModel('adios/pomidory')
         assert item._api_client.base_url == 'https://pomidory.fakturownia.pl/'
         assert item._api_client.api_token == 'adios/pomidory'
+
+    def test_update_data(self):
+        item = base.BaseModel('adios/pomidory')
+        item.update_data(tanie='dranie')
+        assert item.tanie == 'dranie'

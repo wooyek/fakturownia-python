@@ -27,6 +27,9 @@ class BaseModel(object):
     def get_raw_data(self):
         return self._data
 
+    def update_data(self, **kwargs):
+        self._data.update(kwargs)
+
     def post(self, **kwargs):
         data = self.prepare_post_data(**kwargs)
         response = self._api_client.post(self.get_endpoint(), data=data)
