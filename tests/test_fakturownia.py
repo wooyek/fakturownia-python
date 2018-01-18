@@ -100,5 +100,3 @@ def test_change_client_data_effect_on_history_invoices(sandbox_api):
     client.name = 'Kabaret Starszych Panów'
     client.put()
     assert invoice.buyer_name == sandbox_api.invoices[invoice.id].get().buyer_name
-
-

@@ -7,9 +7,9 @@ import pytest
 import six
 from mock import MagicMock
 
+from . import test_data
 from fakturownia import base, endpoints, factories
 from fakturownia.exceptions import HttpException
-from . import test_data
 
 log = logging.getLogger(__name__)
 
@@ -262,7 +262,7 @@ class BaseModelTests(object):
             # noinspection PyStatementEffect
             item.foo_bar
 
-    def test_update_data(self):
+    def test_private_update_data(self):
         item = base.BaseModel(None, id=333)
         with pytest.raises(AssertionError, match='Existing id does not match update data 333!=777'):
             # noinspection PyProtectedMember

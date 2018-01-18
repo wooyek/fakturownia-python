@@ -32,7 +32,7 @@ class BaseModel(object):
         return self._data
 
     def update_data(self, **kwargs):
-        self._data.update(kwargs)
+        self._update_data(kwargs)
 
     def post(self, **kwargs):
         data = self.prepare_post_data(**kwargs)
