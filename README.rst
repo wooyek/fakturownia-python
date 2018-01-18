@@ -39,7 +39,7 @@ Python client library for the Fakturownia API
 
 If you don't know it yet be sure to check it out:
 
-.. image:: //app.fakturownia.pl/polecam-fakturownie-niebieski.png
+.. image:: http://app.fakturownia.pl/polecam-fakturownie-niebieski.png
     :target: http://fakturownia.pl
     :alt: Polecam Fakturownia.pl - prosty program do fakturowania online
 
