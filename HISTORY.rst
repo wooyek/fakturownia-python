@@ -19,3 +19,8 @@ History
 
 * EU member states VAT rate helpers for B2C transactions
 * FAKTUROWNIA_TIMEOUT setting for request timeout
+
+0.2.2 (2018-01-18)
+++++++++++++++++++
+
+* Payload data cleanup from readonly fields so get().put() is possible

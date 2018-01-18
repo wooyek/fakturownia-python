@@ -27,6 +27,8 @@ class DateProperty(object):
 class Invoice(BaseModel):
     _endpoint = 'invoices'
     _data_wrap = 'invoice'
+    _readonly = ['payment_url', 'view_url', 'check_fiscal_print', 'adjust_invoice_price', 'sales_code']
+
     sell_date = DateProperty('sell_date')
     issue_date = DateProperty('issue_date')
     payment_to = DateProperty('payment_to')
@@ -70,20 +72,12 @@ class Invoices(BaseEndpoint):
 class Client(BaseModel):
     _endpoint = 'clients'
     _data_wrap = 'client'
+    _readonly = ['balance']
 
     def create_invoice(self, **kwargs):
         assert self.id
         kwargs['client_id'] = self.id
         return self._api_client.invoices.create(**kwargs)
-
-    def prepare_post_data(self, **kwargs):
-        payload = super(Client, self).prepare_post_data(**kwargs)
-        pop_data = ['balance']
-        data = payload[self._data_wrap]
-        for key in pop_data:
-            if key in data:
-                data.pop('balance')
-        return payload
 
 
 class Clients(BaseEndpoint):

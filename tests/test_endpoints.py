@@ -7,9 +7,9 @@ import pytest
 import six
 from mock import MagicMock
 
-from . import test_data
-from fakturownia import base, factories, endpoints
+from fakturownia import base, endpoints, factories
 from fakturownia.exceptions import HttpException
+from . import test_data
 
 log = logging.getLogger(__name__)
 
@@ -121,6 +121,14 @@ class ClientTests(object):
         client.put()
         data = api.put.call_args[1]['data']
         assert 'balance' not in data
+    # noinspection PyShadowingNames
+
+
+def test_post_get_put(any_model, api_client):
+    """Smoke test for post > get > put operations"""
+    any_model.id = None
+    any_model._api_client = api_client
+    any_model.post().get().put()
 
 
 # noinspection PyMethodMayBeStatic

@@ -10,9 +10,11 @@ from faker import Faker
 from mock import MagicMock
 from pytest_lazyfixture import lazy_fixture
 
+from fakturownia import endpoints, factories
 from fakturownia.core import ApiClient
 from fakturownia.exceptions import HttpException
 from fakturownia.settings import get_env_from_file
+from tests import test_data
 
 if six.PY3:
     from pathlib import Path
@@ -128,4 +130,14 @@ def sandbox_api(request, secrets):
     lazy_fixture('sandbox_api')
 ])
 def api_client(request):
+    return request.param
+
+
+@pytest.fixture(params=[
+    endpoints.Client(None, **test_data.CLIENT_CREATE),
+    endpoints.Client(None, **factories.ClientFactory().get_raw_data()),
+    endpoints.Invoice(None, **test_data.INVOICE_CREATE),
+    endpoints.Invoice(None, **factories.InvoiceFactory().get_raw_data()),
+])
+def any_model(request):
     return request.param

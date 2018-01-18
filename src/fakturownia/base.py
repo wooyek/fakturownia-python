@@ -1,7 +1,11 @@
 # coding=utf-8
+import logging
+
 import six
 
 from fakturownia import core
+
+log = logging.getLogger(__name__)
 
 
 class BaseEndpoint(object):
@@ -46,6 +50,9 @@ class BaseModel(object):
         data = kwargs or self._data.copy()
         if 'id' in self._data and 'id' not in data:
             data['id'] = self._data['id']
+        for key in self._readonly:
+            if key in data:
+                log.warning("Removing readonly key from payload data: %s: %s", key, data.pop(key))
         return {self._data_wrap: data}
 
     def get(self):
